@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/arch-unknown-symbolic.svg</file>
+        <file>icons/arch-uptodate-symbolic.svg</file>
+        <file>icons/arch-lit-symbolic.svg</file>
+        <file>icons/arch-error-symbolic.svg</file>
+        <file>icons/arch-updates-symbolic.svg</file>
+    </qresource>
+</RCC>
