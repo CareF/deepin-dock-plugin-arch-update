@@ -7,10 +7,13 @@ DESTDIR          = $$_PRO_FILE_PWD_
 DISTFILES       += arch_update.json
 
 HEADERS += \
-    archupdateplugin.h 
+    archupdateplugin.h \ 
+    archupdatedata.h \
+    archupdatewidgets.h
  
 SOURCES += \
-    archupdateplugin.cpp 
+    archupdateplugin.cpp \ 
+    archupdatedata.cpp
  
 isEmpty(PREFIX) {
     PREFIX = /usr

@@ -2,13 +2,28 @@
 #define ARCHUPDATEDATA_H 
 
 #include <QDateTime>
+#include <QObject>
 
-#define ARCH_KEY "arch-update-key"
-#define STATE_KEY "enable"
+class ArchUpdateData : public QObject
+{
+    Q_OBJECT
 
-struct ArchUpdateData {
-    int newpacks;
+public:
+    ArchUpdateData(const QString cmd="/usr/bin/checkupdates");
+    bool is_checking() {return ischecking;}
+    int error_code() {return error;}
+    int newcount() {return newpacks.count();}
+    QString check_cmd;
     QDateTime lastcheck;
+
+public slots:
+    bool check(); // return true if success, otherwise false
+
+private:
+    bool ischecking;
+    int error; // Return code for update command, 0 for no error
+    // If the process cannot be started, error=-2. If the process crashes, error=-1.
+    QList<QString> newpacks;
 };
 
 #endif // ARCHUPDATEDATA_H 

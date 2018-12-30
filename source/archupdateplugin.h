@@ -4,8 +4,14 @@
 #include "dde-dock/pluginsiteminterface.h"
 #include "archupdatewidgets.h"
 #include "archupdatedata.h"
+
+#include <QThread>
+#include <QObject>
 #include <QWidget>
-#include <QSettings>
+#include <QLabel>
+
+#define ARCH_KEY "arch-update-key"
+#define STATE_KEY "enable"
 
 class ArchUpdatePlugin: public QObject, PluginsItemInterface {
     Q_OBJECT
@@ -15,14 +21,14 @@ class ArchUpdatePlugin: public QObject, PluginsItemInterface {
 
 public:
     explicit ArchUpdatePlugin(QObject *parent = nullptr);
-    ~ArchUpdatePlugin();
+    virtual ~ArchUpdatePlugin() override;
 
     const QString pluginName() const override;
     const QString pluginDisplayName() const override;
     void init(PluginProxyInterface *proxyInter) override;
 
     void pluginStateSwitched() override;
-    bool pluginIsAllowDisable() override { return true; };
+    bool pluginIsAllowDisable() override { return true; }
     bool pluginIsDisable() override;
 
     ///
@@ -39,7 +45,7 @@ public:
     ///
     /// \brief show new packages when click the item
     ///
-    const QWidget *itemPopupApplet(const QString &itemKey) override;
+    virtual QWidget *itemPopupApplet(const QString &itemKey) override;
 
     ///
     /// \brief show setting menu when right click the item 
@@ -56,14 +62,19 @@ public:
     void setSortKey(const QString &itemKey, const int order) override;
     void refreshIcon(const QString &itemKey) override;
     
-private slots:
+signals:
     void checkUpdate();
+
+private slots:
+    void updateTips();
 
 private:
     QPointer<ArchUpdateItem> m_items;
     QPointer<ArchUpdateApplet> m_popups;
     QPointer<QLabel> m_tips;
-    ArchUpdateData* m_data;
+    QPointer<ArchUpdateData> m_data;
+    QThread m_updateThread;
+    QString pacman_dir;
 };
 
 

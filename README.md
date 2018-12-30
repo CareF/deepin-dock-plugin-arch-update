@@ -2,6 +2,8 @@ Arch Linux Updates Indicator DDE Dock Plugin
 ===============
 Update indicator for Arch Linux and Deepin Dock, 
 
+Depend on `pacman-contrib`
+
 
 Credits
 ----------
