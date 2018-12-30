@@ -9,11 +9,14 @@ DISTFILES       += arch_update.json
 HEADERS += \
     archupdateplugin.h \ 
     archupdatedata.h \
-    archupdatewidgets.h
+    archupdateitem.h \
+    archupdateapplet.h
  
 SOURCES += \
     archupdateplugin.cpp \ 
-    archupdatedata.cpp
+    archupdatedata.cpp \
+    archupdateitem.cpp \
+    archupdateapplet.cpp
  
 isEmpty(PREFIX) {
     PREFIX = /usr

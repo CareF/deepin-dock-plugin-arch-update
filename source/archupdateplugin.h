@@ -2,7 +2,8 @@
 #define ARCHUPDATEPLUGIN_H
 
 #include "dde-dock/pluginsiteminterface.h"
-#include "archupdatewidgets.h"
+#include "archupdateitem.h"
+#include "archupdateapplet.h"
 #include "archupdatedata.h"
 
 #include <QThread>
