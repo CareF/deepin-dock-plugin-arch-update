@@ -6,19 +6,19 @@
 #ifdef QT_DEBUG
 #include <QDebug>
 #endif
-
-// itemID or menuID for Context Menu.. Why can't I use enum and switch..
-#define CHECKUPDATE "chk"
-#define SETTINGS "set"
-#define ABOUT "about"
-// keys for settings from .config/deepin/dde-dock.conf, set and get through m_proxyInter
-#define CHECK_CMD_KEY "check_command"
-#define PACMAN_DIR_KEY "pacman_dir"
-#define UPDATE_CMD_KEY "update_cmd"
+#include "settingdiag.h"
+#define MINUTE 60000 //1min in milisecond
 
 ArchUpdatePlugin::ArchUpdatePlugin(QObject *parent):
-    QObject(parent), m_items(nullptr), m_popups(nullptr), m_tips(nullptr),
-    m_data(nullptr), pacman_dir(), update_cmd(), pacmanWatcher(this) {
+    QObject(parent),
+    m_items(nullptr), m_popups(nullptr), m_tips(nullptr),
+    m_data(nullptr), pacman_dir(), update_cmd(),
+    pacmanWatcher(this), watcherTimer(this), regularTimer(this) {
+    watcherTimer.setSingleShot(true);
+    connect(&watcherTimer, &QTimer::timeout,
+            this, &ArchUpdatePlugin::checkUpdate);
+    connect(&regularTimer, &QTimer::timeout,
+            this, &ArchUpdatePlugin::checkUpdate);
 }
 
 ArchUpdatePlugin::~ArchUpdatePlugin() {
@@ -72,15 +72,24 @@ void ArchUpdatePlugin::init(PluginProxyInterface *proxyInter) {
     m_tips->setStyleSheet("color:white; padding:0px 3px;");
 
     pacman_dir = m_proxyInter->getValue(this, PACMAN_DIR_KEY,
-                        "/var/lib/pacman/local").toString();
+                        DEFAULT_PACMAN_DIR).toString();
     update_cmd = m_proxyInter->getValue(this, UPDATE_CMD_KEY,
                         DEFAULT_UPDATE).toString();
-    pacmanWatcher.addPath(pacman_dir);
-    connect(&pacmanWatcher, &QFileSystemWatcher::directoryChanged,
-            this, &ArchUpdatePlugin::fileChanged);
+    // pacmanWatcher.removePaths(pacmanWatcher.files());
+    // ? Is init called every time the plugin is loaded and unloaded
+    // without or with distroy and recreate it?
+
     if(!pluginIsDisable()) {
         this->m_proxyInter->itemAdded(this, ARCH_KEY);
+        pacmanWatcher.addPath(pacman_dir);
+        connect(&pacmanWatcher, &QFileSystemWatcher::directoryChanged,
+                this, &ArchUpdatePlugin::fileChanged);
+        regularTimer.setInterval(MINUTE * m_proxyInter->getValue(
+                                     this, CHK_INTERVAL_KEY, 30).toInt());
         emit checkUpdate();
+    }  else {
+        disconnect(&pacmanWatcher, &QFileSystemWatcher::directoryChanged,
+                   this, &ArchUpdatePlugin::fileChanged);
     }
 }
 
@@ -103,13 +112,15 @@ void ArchUpdatePlugin::refreshTips() {
 }
 
 void ArchUpdatePlugin::fileChanged() {
-    // TODO: wait for some time when stop tracking the signal,
+    // wait for 1min when stop tracking the signal,
     // than emmit checkUpdate
-    emit checkUpdate();
+    if (watcherTimer.isActive())
+        return;
+    watcherTimer.start(MINUTE/2); // 30s
 }
 
 void ArchUpdatePlugin::updatesystem() {
-    // TODO: call terminal to updat system
+    // call terminal to updat system
     QProcess *updateprocess = new QProcess(this);
     connect(updateprocess, SIGNAL(finished(int)), updateprocess, SLOT(deleteLater));
     updateprocess->start(update_cmd);
@@ -208,9 +219,49 @@ void ArchUpdatePlugin::invokedMenuItem(const QString &itemKey,
     }
 }
 
+const QIntValidator ArchUpdatePlugin::TIMEINMIN(1, 99999);
 void ArchUpdatePlugin::execSettingDiag() {
     // TODO: setting for checkupdate command, pacman dir, time interval, update command
+    QList<settingItem> config = {
+        {tr("Checkupdate"), m_data->check_cmd,
+         tr("The shell command to check updates (Default `checkupdates` provided by pacman-contrib)"),
+         DEFAULT_CHK_UPDATE, nullptr},
+        {tr("Pacman local directory path"), pacman_dir,
+         tr("The plugin watch this path to detect when new packages are installed"),
+         DEFAULT_PACMAN_DIR, nullptr},
+        {tr("Update shell cmd"), update_cmd, "", DEFAULT_UPDATE, nullptr},
+        {tr("Time Interval (min)"), QString(regularTimer.interval()/MINUTE),
+         tr("Interval between updates check (minutes)"),
+         DEFAULT_CHK_UPDATE, &TIMEINMIN}
+    };
+    SettingDiag settingDiag(config);
+    switch (settingDiag.exec()) {
+    case QDialog::Rejected:
+        return;
+    case QDialog::Accepted:
+        break;
+    }
+    m_proxyInter->saveValue(this, CHECK_CMD_KEY, config[0].currentValue);
+    m_proxyInter->saveValue(this, PACMAN_DIR_KEY, config[1].currentValue);
+    m_proxyInter->saveValue(this, UPDATE_CMD_KEY, config[2].currentValue);
+    m_proxyInter->saveValue(this, CHK_INTERVAL_KEY, config[3].currentValue.toInt());
+    reloadSetting();
 }
+
+void ArchUpdatePlugin::reloadSetting() {
+    m_data->check_cmd = m_proxyInter->getValue(
+                this, CHECK_CMD_KEY).toString();
+    pacman_dir = m_proxyInter->getValue(this, PACMAN_DIR_KEY).toString();
+    update_cmd = m_proxyInter->getValue(this, UPDATE_CMD_KEY).toString();
+    pacmanWatcher.removePaths(pacmanWatcher.files());
+    if(!pluginIsDisable()) {
+        pacmanWatcher.addPath(pacman_dir);
+        regularTimer.setInterval(
+                    MINUTE * m_proxyInter->getValue(
+                        this, CHK_INTERVAL_KEY).toInt());
+    }
+}
+
 
 int ArchUpdatePlugin::itemSortKey(const QString &itemKey) {
     const QString key = QString("pos_%1_%2").arg(itemKey).arg(displayMode());

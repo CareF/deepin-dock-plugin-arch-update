@@ -12,7 +12,9 @@ ArchUpdateData::ArchUpdateData(const QString cmd):
 
 bool ArchUpdateData::check() {
     // This function can be time consumming.
-    // sMake it an independent thread.
+    // so Make it an independent thread.
+    if (ischecking)
+        return false;
     ischecking = true;
 #ifdef QT_DEBUG
     qDebug() << "Arch Update Plugin: Check Update Start!";

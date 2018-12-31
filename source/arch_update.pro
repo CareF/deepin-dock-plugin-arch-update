@@ -1,4 +1,4 @@
-QT              += widgets svg
+QT              += widgets svg gui
 TEMPLATE         = lib
 CONFIG          += plugin c++11
  
@@ -10,13 +10,15 @@ HEADERS += \
     archupdateplugin.h \ 
     archupdatedata.h \
     archupdateitem.h \
-    archupdateapplet.h
+    archupdateapplet.h \
+    settingdiag.h
  
 SOURCES += \
     archupdateplugin.cpp \ 
     archupdatedata.cpp \
     archupdateitem.cpp \
-    archupdateapplet.cpp
+    archupdateapplet.cpp \
+    settingdiag.cpp
  
 isEmpty(PREFIX) {
     PREFIX = /usr

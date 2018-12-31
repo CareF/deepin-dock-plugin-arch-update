@@ -6,6 +6,7 @@
 #include <QStringList>
 
 #define DEFAULT_CHK_UPDATE "/usr/bin/checkupdates"
+#define DEFAULT_PACMAN_DIR "/var/lib/pacman/local"
 #define DEFAULT_UPDATE "deepin-terminal -e sh -c \"sudo pacman -Syu ; echo Done - Press enter to exit;\""
 
 class ArchUpdateData : public QObject
