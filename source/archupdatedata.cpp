@@ -36,9 +36,8 @@ bool ArchUpdateData::check() {
     QTextStream outf(chkprocess.readAllStandardOutput());
     QString pkgname, v1, arrow, v2;
     newpacks.clear();
-    while(!outf.atEnd()) {
+    while(!(outf>>pkgname>>v1>>arrow>>v2).atEnd()) {
         // format is "pkgname version1 -> version2" each line
-        outf>>pkgname>>v1>>arrow>>v2;
         newpacks.push_back(pkgname);
     }
 

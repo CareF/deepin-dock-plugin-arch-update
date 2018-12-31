@@ -3,6 +3,7 @@
 
 #include <QDateTime>
 #include <QObject>
+#include <QStringList>
 
 class ArchUpdateData : public QObject
 {
@@ -15,6 +16,7 @@ public:
     int newcount() const {return newpacks.count();}
     QString check_cmd;
     QDateTime lastcheck;
+    const QStringList &newpackList() const {return newpacks;}
 
 signals:
     void finished();
@@ -26,7 +28,7 @@ private:
     bool ischecking;
     int error; // Return code for update command, 0 for no error
     // If the process cannot be started, error=-2. If the process crashes, error=-1.
-    QList<QString> newpacks;
+    QStringList newpacks;
 };
 
 #endif // ARCHUPDATEDATA_H 

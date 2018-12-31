@@ -2,6 +2,7 @@
 #include <QJsonDocument>
 #include <QMessageBox>
 #include <QIcon>
+#include <QProcess>
 #ifdef QT_DEBUG
 #include <QDebug>
 #endif
@@ -13,10 +14,11 @@
 // keys for settings from .config/deepin/dde-dock.conf, set and get through m_proxyInter
 #define CHECK_CMD_KEY "check_command"
 #define PACMAN_DIR_KEY "pacman_dir"
+#define UPDATE_CMD_KEY "update_cmd"
 
 ArchUpdatePlugin::ArchUpdatePlugin(QObject *parent):
     QObject(parent), m_items(nullptr), m_popups(nullptr), m_tips(nullptr),
-    m_data(nullptr), pacman_dir(), pacmanWatcher(this) {
+    m_data(nullptr), pacman_dir(), update_cmd(), pacmanWatcher(this) {
 }
 
 ArchUpdatePlugin::~ArchUpdatePlugin() {
@@ -59,6 +61,10 @@ void ArchUpdatePlugin::init(PluginProxyInterface *proxyInter) {
             m_items, &ArchUpdateItem::refreshIcon);
 
     m_popups = new ArchUpdateApplet(m_data);
+    connect(m_data, &ArchUpdateData::finished,
+            m_popups, &ArchUpdateApplet::refreshList);
+    connect(m_popups, &ArchUpdateApplet::update,
+            this, &ArchUpdatePlugin::updatesystem);
 
     m_tips = new QLabel();
     m_tips->setObjectName("arch_update_tips");
@@ -66,6 +72,10 @@ void ArchUpdatePlugin::init(PluginProxyInterface *proxyInter) {
 
     pacman_dir = m_proxyInter->getValue(this, PACMAN_DIR_KEY,
                         "/var/lib/pacman/local").toString();
+    update_cmd = m_proxyInter->getValue(this, UPDATE_CMD_KEY,
+                        "deepin-terminal -e sh -c \"sudo pacman -Syu ; "
+                                        "echo Done - Press enter to exit;\""
+                                        ).toString();
     pacmanWatcher.addPath(pacman_dir);
     connect(&pacmanWatcher, &QFileSystemWatcher::directoryChanged,
             this, &ArchUpdatePlugin::fileChanged);
@@ -97,6 +107,13 @@ void ArchUpdatePlugin::fileChanged() {
     // TODO: wait for some time when stop tracking the signal,
     // than emmit checkUpdate
     emit checkUpdate();
+}
+
+void ArchUpdatePlugin::updatesystem() {
+    // TODO: call terminal to updat system
+    QProcess updateprocess(this);
+//    updateprocess.start(update_cmd);
+    //  deepin-terminal is a blocking GUI.. TODO
 }
 
 void ArchUpdatePlugin::pluginStateSwitched() {

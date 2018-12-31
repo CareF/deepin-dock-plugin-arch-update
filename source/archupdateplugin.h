@@ -73,6 +73,7 @@ signals:
 private slots:
     void refreshTips();
     void fileChanged();
+    void updatesystem();
 
 private:
     QPointer<ArchUpdateItem> m_items;
@@ -81,6 +82,7 @@ private:
     QPointer<ArchUpdateData> m_data;
     QThread m_updateThread;
     QString pacman_dir;
+    QString update_cmd;
     QFileSystemWatcher pacmanWatcher;
 };
 
