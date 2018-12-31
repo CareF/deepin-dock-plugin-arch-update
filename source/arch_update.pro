@@ -26,4 +26,4 @@ target.path = $${PREFIX}/lib/dde-dock/plugins/
 INSTALLS += target
 
 RESOURCES += \
-    icons.qrc
+    archupdate.qrc

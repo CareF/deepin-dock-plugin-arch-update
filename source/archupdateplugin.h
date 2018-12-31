@@ -6,10 +6,12 @@
 #include "archupdateapplet.h"
 #include "archupdatedata.h"
 
-#include <QThread>
 #include <QObject>
 #include <QWidget>
 #include <QLabel>
+#include <QThread>
+#include <QFileSystemWatcher>
+#include <QThread>
 
 #define ARCH_KEY "arch-update-key"
 #define STATE_KEY "enable"
@@ -62,12 +64,15 @@ public:
     int itemSortKey(const QString &itemKey) override;
     void setSortKey(const QString &itemKey, const int order) override;
     void refreshIcon(const QString &itemKey) override;
+
+    void execSettingDiag();
     
 signals:
     void checkUpdate();
 
 private slots:
-    void updateTips();
+    void refreshTips();
+    void fileChanged();
 
 private:
     QPointer<ArchUpdateItem> m_items;
@@ -76,6 +81,7 @@ private:
     QPointer<ArchUpdateData> m_data;
     QThread m_updateThread;
     QString pacman_dir;
+    QFileSystemWatcher pacmanWatcher;
 };
 
 

@@ -10,11 +10,14 @@ class ArchUpdateData : public QObject
 
 public:
     ArchUpdateData(const QString cmd="/usr/bin/checkupdates");
-    bool is_checking() {return ischecking;}
-    int error_code() {return error;}
-    int newcount() {return newpacks.count();}
+    bool is_checking() const {return ischecking;}
+    int error_code() const {return error;}
+    int newcount() const {return newpacks.count();}
     QString check_cmd;
     QDateTime lastcheck;
+
+signals:
+    void finished();
 
 public slots:
     bool check(); // return true if success, otherwise false

@@ -14,6 +14,9 @@ bool ArchUpdateData::check() {
     // This function can be time consumming.
     // sMake it an independent thread.
     ischecking = true;
+#ifdef QT_DEBUG
+    qDebug() << "Arch Update Plugin: Check Update Start!";
+#endif
     QProcess chkprocess(this);
     chkprocess.start(check_cmd);
     if (!chkprocess.waitForStarted()) {
@@ -26,7 +29,7 @@ bool ArchUpdateData::check() {
     }
     error = chkprocess.exitCode();
     if (error != 0) {
-        qDebug() << chkprocess.readAllStandardOutput();
+        qDebug() << "Check Update Error: " << chkprocess.readAllStandardOutput();
     }
 
     // Parse the result of checkupdates
@@ -41,5 +44,9 @@ bool ArchUpdateData::check() {
 
     lastcheck = QDateTime::currentDateTime();
     ischecking = false;
+#ifdef QT_DEBUG
+    qDebug() << "Arch Update Plugin: Check Update Finished!";
+#endif
+    emit finished();
     return true;
 }

@@ -1,6 +1,10 @@
 #include "archupdateplugin.h"
 #include <QJsonDocument>
 #include <QMessageBox>
+#include <QIcon>
+#ifdef QT_DEBUG
+#include <QDebug>
+#endif
 
 // itemID or menuID for Context Menu.. Why can't I use enum and switch..
 #define CHECKUPDATE "chk"
@@ -11,8 +15,8 @@
 #define PACMAN_DIR_KEY "pacman_dir"
 
 ArchUpdatePlugin::ArchUpdatePlugin(QObject *parent):
-    QObject(parent), m_items(nullptr), m_popups(nullptr),
-    m_tips(nullptr), m_data(nullptr), pacman_dir() {
+    QObject(parent), m_items(nullptr), m_popups(nullptr), m_tips(nullptr),
+    m_data(nullptr), pacman_dir(), pacmanWatcher(this) {
 }
 
 ArchUpdatePlugin::~ArchUpdatePlugin() {
@@ -34,15 +38,6 @@ const QString ArchUpdatePlugin::pluginDisplayName() const {
 
 void ArchUpdatePlugin::init(PluginProxyInterface *proxyInter) {
     this->m_proxyInter = proxyInter;
-    m_items = new ArchUpdateItem(m_data);
-    connect(m_items, &ArchUpdateItem::requestContextMenu, [this] {
-            m_proxyInter->requestContextMenu(this, ARCH_KEY); });
-
-    m_popups = new ArchUpdateApplet(m_data);
-
-    m_tips = new QLabel();
-    m_tips->setObjectName("arch_update_tips");
-    m_tips->setStyleSheet("color:white; padding:0px 3px;");
 
     m_data = new ArchUpdateData(
                 m_proxyInter->getValue(this, CHECK_CMD_KEY,
@@ -50,19 +45,58 @@ void ArchUpdatePlugin::init(PluginProxyInterface *proxyInter) {
     m_data->moveToThread(&m_updateThread);
     connect(this, &ArchUpdatePlugin::checkUpdate,
             m_data, &ArchUpdateData::check);
+    connect(m_data, &ArchUpdateData::finished,
+            this, &ArchUpdatePlugin::refreshTips);
+    m_updateThread.start();
+
+    m_items = new ArchUpdateItem(m_data);
+    m_items->setWindowIcon(QIcon(":/icons/arch-lit-symbolic.svg")); // used for about window
+    connect(m_items, &ArchUpdateItem::requestContextMenu, [this] {
+            m_proxyInter->requestContextMenu(this, ARCH_KEY); });
+    connect(m_data, &ArchUpdateData::finished,
+            m_items, &ArchUpdateItem::refreshIcon);
+    connect(this, &ArchUpdatePlugin::checkUpdate,
+            m_items, &ArchUpdateItem::refreshIcon);
+
+    m_popups = new ArchUpdateApplet(m_data);
+
+    m_tips = new QLabel();
+    m_tips->setObjectName("arch_update_tips");
+    m_tips->setStyleSheet("color:white; padding:0px 3px;");
 
     pacman_dir = m_proxyInter->getValue(this, PACMAN_DIR_KEY,
                         "/var/lib/pacman/local").toString();
+    pacmanWatcher.addPath(pacman_dir);
+    connect(&pacmanWatcher, &QFileSystemWatcher::directoryChanged,
+            this, &ArchUpdatePlugin::fileChanged);
     if(!pluginIsDisable()) {
         this->m_proxyInter->itemAdded(this, ARCH_KEY);
         emit checkUpdate();
     }
 }
 
-void ArchUpdatePlugin::updateTips() {
-    m_tips->setText(tr("%d new packages\nLast check: %s").arg(
-                m_data->newcount()).arg(
+void ArchUpdatePlugin::refreshTips() {
+#ifdef QT_DEBUG
+    qDebug()<<"----- Refresh Tips!!";
+#endif
+    QString updates;
+    if (m_data->error_code() != 0) {
+        updates = tr("Error\n");
+    }
+    else if(m_data->newcount() != 0) {
+        updates = tr("%1 new packages\n").arg(m_data->newcount());
+    }
+    else{
+        updates = tr("Up to date :)\n");
+    }
+    m_tips->setText(updates+tr("Last check: %2").arg(
                 m_data->lastcheck.toString("M/d H:m")));
+}
+
+void ArchUpdatePlugin::fileChanged() {
+    // TODO: wait for some time when stop tracking the signal,
+    // than emmit checkUpdate
+    emit checkUpdate();
 }
 
 void ArchUpdatePlugin::pluginStateSwitched() {
@@ -145,21 +179,27 @@ void ArchUpdatePlugin::invokedMenuItem(const QString &itemKey,
             emit checkUpdate();
         }
         else if (menuID == SETTINGS) {
-            // TODO
+            execSettingDiag();
         }
         else if (menuID == ABOUT) {
-            QMessageBox::about(nullptr, tr("Arch Update: About"),
+            QMessageBox::about(m_items, tr("Arch Update: About"),
                               tr("Deepin Dock Plugin: Arch Update Indicator.\n"
-                              "Author: CareF\n"
-                              "Source: <a href='https://github.com/CareF/deepin-dock-plugin-arch-update'>GitHub</a>"));
+                                 "License: GPLv3.0\n"
+                                 "Author: CareF <me@mail.caref.xyz>\n"
+                                 "Source: https://github.com/CareF/deepin-dock-plugin-arch-update"));
+            // TODO: clickable url?
         }
     }
+}
+
+void ArchUpdatePlugin::execSettingDiag() {
+    // TODO: setting for checkupdate command, pacman dir, time interval, update command
 }
 
 int ArchUpdatePlugin::itemSortKey(const QString &itemKey) {
     const QString key = QString("pos_%1_%2").arg(itemKey).arg(displayMode());
     return m_proxyInter->getValue(this, key, 
-            displayMode() == Dock::DisplayMode::Fashion ? 1 : 1).toInt();
+            displayMode() == Dock::DisplayMode::Fashion ? 2 : 3).toInt();
 }
 
 void ArchUpdatePlugin::setSortKey(const QString &itemKey, const int order) {
