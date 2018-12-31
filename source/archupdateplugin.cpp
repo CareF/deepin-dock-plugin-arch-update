@@ -110,9 +110,9 @@ void ArchUpdatePlugin::fileChanged() {
 
 void ArchUpdatePlugin::updatesystem() {
     // TODO: call terminal to updat system
-    QProcess updateprocess(this);
-//    updateprocess.start(update_cmd);
-    //  deepin-terminal is a blocking GUI.. TODOd
+    QProcess *updateprocess = new QProcess(this);
+    connect(updateprocess, SIGNAL(finished(int)), updateprocess, SLOT(deleteLater));
+    updateprocess->start(update_cmd);
 }
 
 void ArchUpdatePlugin::pluginStateSwitched() {
