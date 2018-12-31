@@ -5,12 +5,15 @@
 #include <QObject>
 #include <QStringList>
 
+#define DEFAULT_CHK_UPDATE "/usr/bin/checkupdates"
+#define DEFAULT_UPDATE "deepin-terminal -e sh -c \"sudo pacman -Syu ; echo Done - Press enter to exit;\""
+
 class ArchUpdateData : public QObject
 {
     Q_OBJECT
 
 public:
-    ArchUpdateData(const QString cmd="/usr/bin/checkupdates");
+    ArchUpdateData(const QString cmd=DEFAULT_CHK_UPDATE);
     bool is_checking() const {return ischecking;}
     int error_code() const {return error;}
     int newcount() const {return newpacks.count();}

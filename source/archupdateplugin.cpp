@@ -43,7 +43,7 @@ void ArchUpdatePlugin::init(PluginProxyInterface *proxyInter) {
 
     m_data = new ArchUpdateData(
                 m_proxyInter->getValue(this, CHECK_CMD_KEY,
-                    "/usr/bin/checkupdates").toString());
+                    DEFAULT_CHK_UPDATE).toString());
     m_data->moveToThread(&m_updateThread);
     connect(this, &ArchUpdatePlugin::checkUpdate,
             m_data, &ArchUpdateData::check);
@@ -52,7 +52,8 @@ void ArchUpdatePlugin::init(PluginProxyInterface *proxyInter) {
     m_updateThread.start();
 
     m_items = new ArchUpdateItem(m_data);
-    m_items->setWindowIcon(QIcon(":/icons/arch-lit-symbolic.svg")); // used for about window
+    // m_items->setWindowIcon(QIcon(":/icons/arch-lit-symbolic.svg")); // used for about window
+    m_items->setWindowIcon(QIcon(":/lit")); // used for about window
     connect(m_items, &ArchUpdateItem::requestContextMenu, [this] {
             m_proxyInter->requestContextMenu(this, ARCH_KEY); });
     connect(m_data, &ArchUpdateData::finished,
@@ -73,9 +74,7 @@ void ArchUpdatePlugin::init(PluginProxyInterface *proxyInter) {
     pacman_dir = m_proxyInter->getValue(this, PACMAN_DIR_KEY,
                         "/var/lib/pacman/local").toString();
     update_cmd = m_proxyInter->getValue(this, UPDATE_CMD_KEY,
-                        "deepin-terminal -e sh -c \"sudo pacman -Syu ; "
-                                        "echo Done - Press enter to exit;\""
-                                        ).toString();
+                        DEFAULT_UPDATE).toString();
     pacmanWatcher.addPath(pacman_dir);
     connect(&pacmanWatcher, &QFileSystemWatcher::directoryChanged,
             this, &ArchUpdatePlugin::fileChanged);
@@ -113,7 +112,7 @@ void ArchUpdatePlugin::updatesystem() {
     // TODO: call terminal to updat system
     QProcess updateprocess(this);
 //    updateprocess.start(update_cmd);
-    //  deepin-terminal is a blocking GUI.. TODO
+    //  deepin-terminal is a blocking GUI.. TODOd
 }
 
 void ArchUpdatePlugin::pluginStateSwitched() {

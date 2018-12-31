@@ -56,7 +56,8 @@ void ArchUpdateItem::refreshIcon() {
     else {
         state = "uptodate";
     }
-    QString iconname = QString(":icons/arch-%1-symbolic.svg").arg(state);
+    // QString iconname = QString(":icons/arch-%1-symbolic.svg").arg(state);
+    QString iconname = QString(":/%1").arg(state);
 #ifdef QT_DEBUG
     qDebug()<<"refreshIcon: "<<iconname;
 #endif
