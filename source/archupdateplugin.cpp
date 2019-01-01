@@ -116,7 +116,7 @@ void ArchUpdatePlugin::fileChanged() {
     // than emmit checkUpdate
     if (watcherTimer.isActive())
         return;
-    watcherTimer.start(MINUTE/2); // 30s
+    watcherTimer.start(MINUTE/6); // 10s
 }
 
 void ArchUpdatePlugin::updatesystem() {
