@@ -4,6 +4,18 @@ Update indicator for Arch Linux and Deepin Dock,
 
 Depend on `pacman-contrib`
 
+Install
+--------
+
+```
+mkdir build
+cd build
+qmake ../source
+make
+sudo make install
+pkill dde-dock
+```
+
 
 Other notes
 -------
