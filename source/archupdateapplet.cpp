@@ -18,7 +18,7 @@ ArchUpdateApplet::ArchUpdateApplet(const ArchUpdateData* data, QWidget *parent) 
     packlist->setMaximumHeight(HEIGHT);
     packlist->setSelectionMode(QAbstractItemView::NoSelection);
 
-    QVBoxLayout *vLayout = new QVBoxLayout;
+    QVBoxLayout *vLayout = new QVBoxLayout(this);
     vLayout->addWidget(packlist);
     QFrame* line = new QFrame(this);
     line->setFrameShape(QFrame::HLine);

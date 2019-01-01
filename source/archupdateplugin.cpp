@@ -85,7 +85,7 @@ void ArchUpdatePlugin::init(PluginProxyInterface *proxyInter) {
         connect(&pacmanWatcher, &QFileSystemWatcher::directoryChanged,
                 this, &ArchUpdatePlugin::fileChanged);
         regularTimer.setInterval(MINUTE * m_proxyInter->getValue(
-                                     this, CHK_INTERVAL_KEY, 30).toInt());
+                                     this, CHK_INTERVAL_KEY, DEFAULT_INTERVAL).toInt());
         emit checkUpdate();
     }  else {
         disconnect(&pacmanWatcher, &QFileSystemWatcher::directoryChanged,
@@ -221,31 +221,26 @@ void ArchUpdatePlugin::invokedMenuItem(const QString &itemKey,
 
 const QIntValidator ArchUpdatePlugin::TIMEINMIN(1, 99999);
 void ArchUpdatePlugin::execSettingDiag() {
-    // TODO: setting for checkupdate command, pacman dir, time interval, update command
     QList<settingItem> config = {
         {tr("Checkupdate"), m_data->check_cmd,
          tr("The shell command to check updates (Default `checkupdates` provided by pacman-contrib)"),
          DEFAULT_CHK_UPDATE, nullptr},
-        {tr("Pacman local directory path"), pacman_dir,
+        {tr("Pacman local path"), pacman_dir,
          tr("The plugin watch this path to detect when new packages are installed"),
          DEFAULT_PACMAN_DIR, nullptr},
         {tr("Update shell cmd"), update_cmd, "", DEFAULT_UPDATE, nullptr},
-        {tr("Time Interval (min)"), QString(regularTimer.interval()/MINUTE),
+        {tr("Time Interval (min)"), QString::number(regularTimer.interval()/MINUTE),
          tr("Interval between updates check (minutes)"),
-         DEFAULT_CHK_UPDATE, &TIMEINMIN}
+         QString::number(DEFAULT_INTERVAL), &TIMEINMIN}
     };
-    SettingDiag settingDiag(config);
-    switch (settingDiag.exec()) {
-    case QDialog::Rejected:
-        return;
-    case QDialog::Accepted:
-        break;
+    SettingDiag settingDiag(config, m_items); // m_items as parents for icon and other infos (maybe?)
+    if (settingDiag.exec() == QDialog::Accepted) {
+        m_proxyInter->saveValue(this, CHECK_CMD_KEY, config[0].currentValue);
+        m_proxyInter->saveValue(this, PACMAN_DIR_KEY, config[1].currentValue);
+        m_proxyInter->saveValue(this, UPDATE_CMD_KEY, config[2].currentValue);
+        m_proxyInter->saveValue(this, CHK_INTERVAL_KEY, config[3].currentValue.toInt());
+        reloadSetting();
     }
-    m_proxyInter->saveValue(this, CHECK_CMD_KEY, config[0].currentValue);
-    m_proxyInter->saveValue(this, PACMAN_DIR_KEY, config[1].currentValue);
-    m_proxyInter->saveValue(this, UPDATE_CMD_KEY, config[2].currentValue);
-    m_proxyInter->saveValue(this, CHK_INTERVAL_KEY, config[3].currentValue.toInt());
-    reloadSetting();
 }
 
 void ArchUpdatePlugin::reloadSetting() {
