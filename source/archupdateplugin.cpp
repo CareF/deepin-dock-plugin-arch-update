@@ -221,6 +221,7 @@ void ArchUpdatePlugin::invokedMenuItem(const QString &itemKey,
 
 const QIntValidator ArchUpdatePlugin::TIMEINMIN(1, 99999);
 void ArchUpdatePlugin::execSettingDiag() {
+    // TODO: make it non-blocking!
     QList<settingItem> config = {
         {tr("Checkupdate"), m_data->check_cmd,
          tr("The shell command to check updates (Default `checkupdates` provided by pacman-contrib)"),
