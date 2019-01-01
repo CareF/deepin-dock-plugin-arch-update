@@ -33,19 +33,20 @@ ArchUpdateApplet::ArchUpdateApplet(const ArchUpdateData* data, QWidget *parent) 
 void ArchUpdateApplet::refreshList() {
     packlist->clear();
     if(m_data->newcount() == 0) {
-        QListWidgetItem* nopack = new QListWidgetItem(tr("..(None).."), packlist);
+        // TODO set it grey
+        QListWidgetItem* nopack = new QListWidgetItem(tr("  ..(None)..  "), packlist);
         nopack->setTextAlignment(Qt::AlignHCenter);
         packlist->addItem(nopack);
     }
     else {
         // TODO: show version when hover
         packlist->addItems(m_data->newpackList());
-        int w = packlist->sizeHintForColumn(0) + 5;
-        packlist->setFixedWidth(w < WIDTH ? w : WIDTH);
-        int h = packlist->sizeHintForRow(0) * packlist->count() + 4;
-        packlist->setFixedHeight(h < HEIGHT ? h : HEIGHT);
         #ifdef QT_DEBUG
         qDebug()<<"-->Arch Update Applet packlist count: "<<packlist->count();
         #endif
     }
+    int w = packlist->sizeHintForColumn(0) + 5;
+    packlist->setFixedWidth(w < WIDTH ? w : WIDTH);
+    int h = packlist->sizeHintForRow(0) * packlist->count() + 4;
+    packlist->setFixedHeight(h < HEIGHT ? h : HEIGHT);
 }
