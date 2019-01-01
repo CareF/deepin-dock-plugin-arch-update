@@ -16,12 +16,22 @@ sudo make install
 pkill dde-dock
 ```
 
+TODO
+-------
+- [ ] non-blocking dialog
+- [ ] translation 
+- [ ] show update version infos
+- [ ] add travis.ci support (can I)
+
+
+Known bugs
+-----
+- [ ] HiDi Scaling
 
 Other notes
 -------
 Not sure if it's a bug of Qt or not, but if I name qrc file `icons.qrc`, it will not be able to find the resource files. 
 It will be appreciated if anyone can help me with why. 
-
 
 Credits
 ----------
