@@ -7,6 +7,16 @@ Depend on `pacman-contrib`
 Install
 --------
 
+### AUR ###
+[deepin-plugin-arch-update](https://aur.archlinux.org/packages/deepin-dock-plugin-arch-update/)
+
+### Binary ###
+Download from [Releases](../../releases/) the `libarch_update.so` file and copy it (as sudo) to 
+`/usr/lib/dde-dock/plugins/`
+
+### Compile it locally ###
+Require Qt
+
 ```
 mkdir build
 cd build
