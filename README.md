@@ -18,7 +18,7 @@ pkill dde-dock
 
 TODO
 -------
-- [ ] non-blocking dialog
+- [X] non-blocking dialog
 - [ ] translation 
 - [ ] show update version infos
 - [ ] add travis.ci support (can I)

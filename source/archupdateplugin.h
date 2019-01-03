@@ -5,6 +5,7 @@
 #include "archupdateitem.h"
 #include "archupdateapplet.h"
 #include "archupdatedata.h"
+#include "settingdialog.h"
 
 #include <QObject>
 #include <QWidget>
@@ -100,6 +101,8 @@ private:
     QTimer watcherTimer;
     QTimer regularTimer;
     static const QIntValidator TIMEINMIN;
+    QList<settingItem> config;
+    QPointer<SettingDialog> settingDialog;
 };
 
 

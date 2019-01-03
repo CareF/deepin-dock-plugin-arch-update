@@ -14,12 +14,12 @@ struct settingItem {
     const QValidator *validator;
 };
 
-class SettingDiag : public QDialog
+class SettingDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit SettingDiag(QList<settingItem> &desc, QWidget *parent=nullptr);
-    virtual ~SettingDiag() override;
+    explicit SettingDialog(QList<settingItem> &desc, QWidget *parent=nullptr);
+    virtual ~SettingDialog() override;
 
 public slots:
     virtual void accept() override;

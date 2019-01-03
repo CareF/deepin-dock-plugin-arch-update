@@ -11,14 +11,14 @@ HEADERS += \
     archupdatedata.h \
     archupdateitem.h \
     archupdateapplet.h \
-    settingdiag.h
+    settingdialog.h
  
 SOURCES += \
     archupdateplugin.cpp \ 
     archupdatedata.cpp \
     archupdateitem.cpp \
     archupdateapplet.cpp \
-    settingdiag.cpp
+    settingdialog.cpp
  
 isEmpty(PREFIX) {
     PREFIX = /usr

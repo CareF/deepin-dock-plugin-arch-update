@@ -1,4 +1,4 @@
-#include "settingdiag.h"
+#include "settingdialog.h"
 #include <QBoxLayout>
 #include <QGridLayout>
 #include <QPushButton>
@@ -9,7 +9,7 @@
 #endif
 #define WIDTH 280
 
-SettingDiag::SettingDiag(QList<settingItem> &desc, QWidget *parent):
+SettingDialog::SettingDialog(QList<settingItem> &desc, QWidget *parent):
     QDialog (parent), config(desc) {
     setWindowTitle(tr("Arch Update Settings"));
     QVBoxLayout *vLayout = new QVBoxLayout();
@@ -32,24 +32,24 @@ SettingDiag::SettingDiag(QList<settingItem> &desc, QWidget *parent):
     connect(buttons, &QDialogButtonBox::rejected, this, &QDialog::reject);
     connect(buttons, &QDialogButtonBox::accepted, this, &QDialog::accept);
     connect(buttons->button(QDialogButtonBox::Reset), &QPushButton::released,
-            this, &SettingDiag::reset);
+            this, &SettingDialog::reset);
     vLayout->addWidget(buttons);
 
     setLayout(vLayout);
 }
 
-SettingDiag::~SettingDiag() {
+SettingDialog::~SettingDialog() {
     delete[] inputs;
 }
 
-void SettingDiag::accept() {
+void SettingDialog::accept() {
     for (int n=0; n<config.size(); n++) {
         config[n].currentValue = inputs[n]->text();
     }
     QDialog::accept();
 }
 
-void SettingDiag::reset() {
+void SettingDialog::reset() {
     for (int n=0; n<config.size(); n++) {
         inputs[n]->setText(config[n].defaultValue);
     }

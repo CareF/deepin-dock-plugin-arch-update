@@ -6,19 +6,33 @@
 #ifdef QT_DEBUG
 #include <QDebug>
 #endif
-#include "settingdiag.h"
 #define MINUTE 60000 //1min in milisecond
 
 ArchUpdatePlugin::ArchUpdatePlugin(QObject *parent):
     QObject(parent),
     m_items(nullptr), m_popups(nullptr), m_tips(nullptr),
     m_data(nullptr), pacman_dir(), update_cmd(),
-    pacmanWatcher(this), watcherTimer(this), regularTimer(this) {
+    pacmanWatcher(this), watcherTimer(this), regularTimer(this),
+    config ({
+            {tr("Checkupdate"), DEFAULT_CHK_UPDATE,
+             tr("The shell command to check updates (Default `checkupdates` provided by pacman-contrib)"),
+             DEFAULT_CHK_UPDATE, nullptr},
+            {tr("Pacman local path"), DEFAULT_PACMAN_DIR,
+             tr("The plugin watch this path to detect when new packages are installed"),
+             DEFAULT_PACMAN_DIR, nullptr},
+            {tr("Update shell cmd"), DEFAULT_UPDATE, "", DEFAULT_UPDATE, nullptr},
+            {tr("Time Interval (min)"), QString::number(DEFAULT_INTERVAL),
+             tr("Interval between updates check (minutes)"),
+             QString::number(DEFAULT_INTERVAL), &TIMEINMIN}
+        }),
+    settingDialog(new SettingDialog(config)) {
     watcherTimer.setSingleShot(true);
     connect(&watcherTimer, &QTimer::timeout,
             this, &ArchUpdatePlugin::checkUpdate);
     connect(&regularTimer, &QTimer::timeout,
             this, &ArchUpdatePlugin::checkUpdate);
+    settingDialog->setWindowModality(Qt::NonModal);
+    connect(settingDialog, &SettingDialog::accepted, this, &ArchUpdatePlugin::reloadSetting);
 }
 
 ArchUpdatePlugin::~ArchUpdatePlugin() {
@@ -26,6 +40,7 @@ ArchUpdatePlugin::~ArchUpdatePlugin() {
     delete m_popups;
     delete m_tips;
     delete m_data;
+    delete settingDialog;
     m_updateThread.quit();
     m_updateThread.wait();
 }
@@ -52,8 +67,6 @@ void ArchUpdatePlugin::init(PluginProxyInterface *proxyInter) {
     m_updateThread.start();
 
     m_items = new ArchUpdateItem(m_data);
-    // m_items->setWindowIcon(QIcon(":/icons/arch-lit-symbolic.svg")); // used for about window
-    m_items->setWindowIcon(QIcon(":/lit")); // used for about window
     connect(m_items, &ArchUpdateItem::requestContextMenu, [this] {
             m_proxyInter->requestContextMenu(this, ARCH_KEY); });
     connect(m_data, &ArchUpdateData::finished,
@@ -209,11 +222,16 @@ void ArchUpdatePlugin::invokedMenuItem(const QString &itemKey,
             execSettingDiag();
         }
         else if (menuID == ABOUT) {
-            QMessageBox::about(m_items, tr("Arch Update: About"),
-                              tr("Deepin Dock Plugin: Arch Update Indicator.\n"
-                                 "License: GPLv3.0\n"
-                                 "Author: CareF <me@mail.caref.xyz>\n"
-                                 "Source: https://github.com/CareF/deepin-dock-plugin-arch-update"));
+            QMessageBox *about = new QMessageBox(QMessageBox::Information,
+                                             tr("Arch Update: About"),
+                                             tr("Deepin Dock Plugin: Arch Update Indicator.\n"
+                                                "License: GPLv3.0\n"
+                                                "Author: CareF <me@mail.caref.xyz>\n"
+                                                "Source: https://github.com/CareF/deepin-dock-plugin-arch-update"));
+            about->setIconPixmap(QIcon(":/lit").pixmap(64));
+            about->setWindowModality(Qt::NonModal);
+//            about->setWindowOpacity(0.9);
+            about->show();
             // TODO: clickable url?
         }
     }
@@ -222,40 +240,27 @@ void ArchUpdatePlugin::invokedMenuItem(const QString &itemKey,
 const QIntValidator ArchUpdatePlugin::TIMEINMIN(1, 99999);
 void ArchUpdatePlugin::execSettingDiag() {
     // TODO: make it non-blocking!
-    QList<settingItem> config = {
-        {tr("Checkupdate"), m_data->check_cmd,
-         tr("The shell command to check updates (Default `checkupdates` provided by pacman-contrib)"),
-         DEFAULT_CHK_UPDATE, nullptr},
-        {tr("Pacman local path"), pacman_dir,
-         tr("The plugin watch this path to detect when new packages are installed"),
-         DEFAULT_PACMAN_DIR, nullptr},
-        {tr("Update shell cmd"), update_cmd, "", DEFAULT_UPDATE, nullptr},
-        {tr("Time Interval (min)"), QString::number(regularTimer.interval()/MINUTE),
-         tr("Interval between updates check (minutes)"),
-         QString::number(DEFAULT_INTERVAL), &TIMEINMIN}
-    };
-    SettingDiag settingDiag(config, m_items); // m_items as parents for icon and other infos (maybe?)
-    if (settingDiag.exec() == QDialog::Accepted) {
-        m_proxyInter->saveValue(this, CHECK_CMD_KEY, config[0].currentValue);
-        m_proxyInter->saveValue(this, PACMAN_DIR_KEY, config[1].currentValue);
-        m_proxyInter->saveValue(this, UPDATE_CMD_KEY, config[2].currentValue);
-        m_proxyInter->saveValue(this, CHK_INTERVAL_KEY, config[3].currentValue.toInt());
-        reloadSetting();
-    }
+    config[0].currentValue = m_data->check_cmd;
+    config[1].currentValue = pacman_dir;
+    config[2].currentValue = update_cmd;
+    config[3].currentValue = QString::number(regularTimer.interval()/MINUTE);
+    settingDialog->show();
 }
 
 void ArchUpdatePlugin::reloadSetting() {
-    m_data->check_cmd = m_proxyInter->getValue(
-                this, CHECK_CMD_KEY).toString();
-    pacman_dir = m_proxyInter->getValue(this, PACMAN_DIR_KEY).toString();
-    update_cmd = m_proxyInter->getValue(this, UPDATE_CMD_KEY).toString();
+    m_data->check_cmd = config[0].currentValue;
+    m_proxyInter->saveValue(this, CHECK_CMD_KEY, config[0].currentValue);
+
+    pacman_dir = config[1].currentValue;
     pacmanWatcher.removePaths(pacmanWatcher.files());
-    if(!pluginIsDisable()) {
-        pacmanWatcher.addPath(pacman_dir);
-        regularTimer.setInterval(
-                    MINUTE * m_proxyInter->getValue(
-                        this, CHK_INTERVAL_KEY).toInt());
-    }
+    pacmanWatcher.addPath(pacman_dir);
+    m_proxyInter->saveValue(this, PACMAN_DIR_KEY, config[1].currentValue);
+
+    update_cmd = config[2].currentValue;
+    m_proxyInter->saveValue(this, UPDATE_CMD_KEY, config[2].currentValue);
+
+    regularTimer.setInterval(MINUTE * config[3].currentValue.toInt());
+    m_proxyInter->saveValue(this, CHK_INTERVAL_KEY, config[3].currentValue.toInt());
 }
 
 
