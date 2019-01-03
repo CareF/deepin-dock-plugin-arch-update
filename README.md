@@ -19,14 +19,9 @@ pkill dde-dock
 TODO
 -------
 - [X] non-blocking dialog
-- [ ] translation 
+- [ ] translation (waiting for API)
 - [ ] show update version infos
 - [ ] add travis.ci support (can I)
-
-
-Known bugs
------
-- [ ] HiDi Scaling
 
 Other notes
 -------
