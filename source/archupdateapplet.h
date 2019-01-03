@@ -14,7 +14,7 @@ public:
     explicit ArchUpdateApplet(const ArchUpdateData* data, QWidget *parent = nullptr);
 
 signals:
-    void update();
+    void updateSys();
 
 public slots:
     void refreshList();

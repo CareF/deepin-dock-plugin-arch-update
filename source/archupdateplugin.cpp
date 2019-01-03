@@ -77,7 +77,7 @@ void ArchUpdatePlugin::init(PluginProxyInterface *proxyInter) {
     m_popups = new ArchUpdateApplet(m_data);
     connect(m_data, &ArchUpdateData::finished,
             m_popups, &ArchUpdateApplet::refreshList);
-    connect(m_popups, &ArchUpdateApplet::update,
+    connect(m_popups, &ArchUpdateApplet::updateSys,
             this, &ArchUpdatePlugin::updatesystem);
 
     m_tips = new QLabel();

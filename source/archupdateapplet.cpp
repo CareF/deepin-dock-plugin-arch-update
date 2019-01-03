@@ -27,7 +27,7 @@ ArchUpdateApplet::ArchUpdateApplet(const ArchUpdateData* data, QWidget *parent) 
     vLayout->addWidget(updateButton);
     setLayout(vLayout);
 
-    connect(updateButton, SIGNAL(released()), this, SIGNAL(update()));
+    connect(updateButton, SIGNAL(released()), this, SIGNAL(updateSys()));
 }
 
 void ArchUpdateApplet::refreshList() {
