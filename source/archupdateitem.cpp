@@ -61,6 +61,7 @@ void ArchUpdateItem::refreshIcon() {
 #ifdef QT_DEBUG
     qDebug()<<"refreshIcon: "<<iconname;
 #endif
-    m_iconPixmap = QIcon(iconname).pixmap(static_cast<int>(iconSize*ratio));
+    m_iconPixmap = QIcon(iconname).pixmap(static_cast<int>(iconSize * ratio));
+    m_iconPixmap.setDevicePixelRatio(ratio);
     update();
 }
