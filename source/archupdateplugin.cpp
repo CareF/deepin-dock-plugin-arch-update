@@ -97,9 +97,9 @@ void ArchUpdatePlugin::init(PluginProxyInterface *proxyInter) {
         pacmanWatcher.addPath(pacman_dir);
         connect(&pacmanWatcher, &QFileSystemWatcher::directoryChanged,
                 this, &ArchUpdatePlugin::fileChanged);
-        regularTimer.setInterval(MINUTE * m_proxyInter->getValue(
-                                     this, CHK_INTERVAL_KEY, DEFAULT_INTERVAL).toInt());
         emit checkUpdate();
+        regularTimer.start(MINUTE * m_proxyInter->getValue(
+                               this, CHK_INTERVAL_KEY, DEFAULT_INTERVAL).toInt());
     }  else {
         disconnect(&pacmanWatcher, &QFileSystemWatcher::directoryChanged,
                    this, &ArchUpdatePlugin::fileChanged);
@@ -112,7 +112,7 @@ void ArchUpdatePlugin::refreshTips() {
 #endif
     QString updates;
     if (m_data->error_code() != 0) {
-        updates = tr("Error\n");
+        updates = tr("Error: %1\n").arg(m_data->error_code());
     }
     else if(m_data->newcount() != 0) {
         updates = tr("%1 new packages\n").arg(m_data->newcount());
@@ -141,10 +141,17 @@ void ArchUpdatePlugin::updatesystem() {
 
 void ArchUpdatePlugin::pluginStateSwitched() {
     m_proxyInter->saveValue(this, STATE_KEY, pluginIsDisable());
-    if (pluginIsDisable())
+    if (pluginIsDisable()) {
+        regularTimer.stop();
+        pacmanWatcher.removePaths(pacmanWatcher.files());
         m_proxyInter->itemRemoved(this, ARCH_KEY);
-    else
+    }
+    else {
+        regularTimer.start();
+        pacmanWatcher.addPath(pacman_dir);
         m_proxyInter->itemAdded(this, ARCH_KEY);
+        emit checkUpdate();
+    }
 }
 
 bool ArchUpdatePlugin::pluginIsDisable() {
