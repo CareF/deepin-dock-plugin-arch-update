@@ -1,6 +1,6 @@
 QT              += widgets svg gui
 TEMPLATE         = lib
-CONFIG          += plugin c++11
+CONFIG          += plugin c++11 lrelease embed_translations
  
 TARGET           = $$qtLibraryTarget(arch_update)
 DESTDIR          = $$_PRO_FILE_PWD_
@@ -29,3 +29,14 @@ INSTALLS += target
 
 RESOURCES += \
     archupdate.qrc
+
+TRANSLATIONS = $$_PRO_FILE_PWD_/i18n/archupdate-zh_CN.ts
+
+#updatets.target = $$TRANSLATIONS
+#updatets.commands = lupdate $$_PRO_FILE_
+#updatets.depends += $$SOURCES $$HEADERS
+#updateqm.target = i18n/archupdate.zh_CN.qm
+#updateqm.commands = lrelease $$_PRO_FILE_
+#updateqm.depends += $$TRANSLATIONS
+#QMAKE_EXTRA_TARGETS += updatets updateqm
+

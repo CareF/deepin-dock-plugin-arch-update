@@ -3,6 +3,9 @@
 #include <QMessageBox>
 #include <QIcon>
 #include <QProcess>
+#include <QApplication>
+#include <QTranslator>
+#include <QException>
 #ifdef QT_DEBUG
 #include <QDebug>
 #endif
@@ -33,6 +36,14 @@ ArchUpdatePlugin::ArchUpdatePlugin(QObject *parent):
             this, &ArchUpdatePlugin::checkUpdate);
     settingDialog->setWindowModality(Qt::NonModal);
     connect(settingDialog, &SettingDialog::accepted, this, &ArchUpdatePlugin::reloadSetting);
+    // QString lang = QLocale::system().name();
+    // translator.load(":/i18n/archupdate."+lang);
+    // translator.load(":/i18n/archupdate-zh_CN.qm");
+    QLocale locale = QLocale::system();
+#ifdef QT_DEBUG
+    qDebug() << "---- Arch Update Plugin: Load Language: " << locale.name();
+#endif
+     translator.load(locale, "archupdate", "-", ":/i18n", ".qm");
 }
 
 ArchUpdatePlugin::~ArchUpdatePlugin() {
@@ -43,6 +54,7 @@ ArchUpdatePlugin::~ArchUpdatePlugin() {
     delete settingDialog;
     m_updateThread.quit();
     m_updateThread.wait();
+    QApplication::instance()->removeTranslator(&translator);
 }
 
 const QString ArchUpdatePlugin::pluginName() const {
@@ -55,6 +67,7 @@ const QString ArchUpdatePlugin::pluginDisplayName() const {
 
 void ArchUpdatePlugin::init(PluginProxyInterface *proxyInter) {
     this->m_proxyInter = proxyInter;
+    QApplication::instance()->installTranslator(&translator);
 
     m_data = new ArchUpdateData(
                 m_proxyInter->getValue(this, CHECK_CMD_KEY,
@@ -234,7 +247,8 @@ void ArchUpdatePlugin::invokedMenuItem(const QString &itemKey,
                                              tr("Deepin Dock Plugin: Arch Update Indicator.\n"
                                                 "License: GPLv3.0\n"
                                                 "Author: CareF <me@mail.caref.xyz>\n"
-                                                "Source: https://github.com/CareF/deepin-dock-plugin-arch-update"));
+                                                "Source: https://github.com/CareF/deepin-dock-plugin-arch-update"),
+                                                 QMessageBox::Ok, m_items);
             about->setIconPixmap(QIcon(":/lit").pixmap(64));
             about->setWindowModality(Qt::NonModal);
 //            about->setWindowOpacity(0.9);

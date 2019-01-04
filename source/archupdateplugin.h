@@ -103,6 +103,7 @@ private:
     static const QIntValidator TIMEINMIN;
     QVector<settingItem> config;
     QPointer<SettingDialog> settingDialog;
+    QTranslator translator;
 };
 
 
