@@ -9,7 +9,7 @@
 #endif
 #define WIDTH 280
 
-SettingDialog::SettingDialog(QList<settingItem> &desc, QWidget *parent):
+SettingDialog::SettingDialog(QVector<settingItem> &desc, QWidget *parent):
     QDialog (parent), config(desc) {
     setWindowTitle(tr("Arch Update Settings"));
     QVBoxLayout *vLayout = new QVBoxLayout();

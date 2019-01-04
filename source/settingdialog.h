@@ -2,7 +2,7 @@
 #define ARCHUPDATESETTINGDIAG_H
 #include <QDialog>
 #include <QValidator>
-#include <QList>
+#include <QVector>
 #include <QLineEdit>
 #include <QPointer>
 
@@ -18,7 +18,7 @@ class SettingDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit SettingDialog(QList<settingItem> &desc, QWidget *parent=nullptr);
+    explicit SettingDialog(QVector<settingItem> &desc, QWidget *parent=nullptr);
     virtual ~SettingDialog() override;
 
 public slots:
@@ -26,7 +26,7 @@ public slots:
     virtual void reset();
 
 private:
-    QList<settingItem> &config;
+    QVector<settingItem> &config;
     QPointer<QLineEdit> *inputs;
 };
 

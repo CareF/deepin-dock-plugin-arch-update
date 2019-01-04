@@ -101,7 +101,7 @@ private:
     QTimer watcherTimer;
     QTimer regularTimer;
     static const QIntValidator TIMEINMIN;
-    QList<settingItem> config;
+    QVector<settingItem> config;
     QPointer<SettingDialog> settingDialog;
 };
 
