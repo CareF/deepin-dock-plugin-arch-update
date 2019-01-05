@@ -4,6 +4,8 @@ Update indicator for Arch Linux and Deepin Dock,
 
 Depend on `pacman-contrib`
 
+This branch tried dtkwidget. 
+
 Install
 --------
 
@@ -34,7 +36,7 @@ Qt 自带的一些组建需要 `qtbase_*.qm` 文件来实现翻译. 然而 `qtba
 TODO
 -------
 - [X] non-blocking dialog
-- [ ] translation (waiting for API)
+- [X] translation (waiting for API)
 - [ ] show update version infos
 - [ ] add travis.ci support (can I)
 
