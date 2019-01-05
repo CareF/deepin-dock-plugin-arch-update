@@ -11,39 +11,50 @@
 #endif
 #define MINUTE 60000 //1min in milisecond
 
+QTranslator ArchUpdatePlugin::qtTranslator;
+QTranslator *ArchUpdatePlugin::loadTranslator(const QLocale &locale, QObject *parent) {
+    // This is a dirty trick to load translator before init of config
+    QTranslator* ts = new QTranslator(parent);
+    // QString lang = QLocale::system().name();
+    // ts->load(QString(":/i18n/archupdate-%1.qm").arg(lang);
+    // ts->load(":/i18n/archupdate-zh_CN.qm");
+#ifdef QT_DEBUG
+    qDebug() << "---- Arch Update Plugin: Load Language: " << locale.name();
+#endif
+    ts->load(locale, "archupdate", "-", ":/i18n", ".qm");
+    ArchUpdatePlugin::qtTranslator.load(
+                locale, "qtbase", "_", QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+    QApplication::instance()->installTranslator(ts);
+    // QApplication::instance()->installTranslator(&ArchUpdatePlugin::qtTranslator);
+    return ts;
+}
+
 ArchUpdatePlugin::ArchUpdatePlugin(QObject *parent):
-    QObject(parent),
+    QObject(parent), translator(loadTranslator(QLocale::system(), this)),
     m_items(nullptr), m_popups(nullptr), m_tips(nullptr),
     m_data(nullptr), pacman_dir(), update_cmd(),
     pacmanWatcher(this), watcherTimer(this), regularTimer(this),
-    config ({
-            {tr("Checkupdate"), DEFAULT_CHK_UPDATE,
-             tr("The shell command to check updates (Default `checkupdates` provided by pacman-contrib)"),
-             DEFAULT_CHK_UPDATE, nullptr},
-            {tr("Pacman local path"), DEFAULT_PACMAN_DIR,
-             tr("The plugin watch this path to detect when new packages are installed"),
-             DEFAULT_PACMAN_DIR, nullptr},
-            {tr("Update shell cmd"), DEFAULT_UPDATE, "", DEFAULT_UPDATE, nullptr},
-            {tr("Time Interval (min)"), QString::number(DEFAULT_INTERVAL),
-             tr("Interval between updates check (minutes)"),
-             QString::number(DEFAULT_INTERVAL), &TIMEINMIN}
-        }),
-    settingDialog(new SettingDialog(config)) {
+    config({
+                {tr("Checkupdate"), DEFAULT_CHK_UPDATE,
+                 tr("The shell command to check updates (Default `checkupdates` provided by pacman-contrib)"),
+                 DEFAULT_CHK_UPDATE, nullptr},
+                {tr("Pacman local path"), DEFAULT_PACMAN_DIR,
+                 tr("The plugin watch this path to detect when new packages are installed"),
+                 DEFAULT_PACMAN_DIR, nullptr},
+                {tr("Update shell cmd"), DEFAULT_UPDATE, "", DEFAULT_UPDATE, nullptr},
+                {tr("Time Interval (min)"), QString::number(DEFAULT_INTERVAL),
+                 tr("Interval between updates check (minutes)"),
+                 QString::number(DEFAULT_INTERVAL), &TIMEINMIN}
+            })
+{
     watcherTimer.setSingleShot(true);
     connect(&watcherTimer, &QTimer::timeout,
             this, &ArchUpdatePlugin::checkUpdate);
     connect(&regularTimer, &QTimer::timeout,
             this, &ArchUpdatePlugin::checkUpdate);
+    settingDialog = new SettingDialog(config);
     settingDialog->setWindowModality(Qt::NonModal);
     connect(settingDialog, &SettingDialog::accepted, this, &ArchUpdatePlugin::reloadSetting);
-    // QString lang = QLocale::system().name();
-    // translator.load(":/i18n/archupdate."+lang);
-    // translator.load(":/i18n/archupdate-zh_CN.qm");
-    QLocale locale = QLocale::system();
-#ifdef QT_DEBUG
-    qDebug() << "---- Arch Update Plugin: Load Language: " << locale.name();
-#endif
-     translator.load(locale, "archupdate", "-", ":/i18n", ".qm");
 }
 
 ArchUpdatePlugin::~ArchUpdatePlugin() {
@@ -54,7 +65,9 @@ ArchUpdatePlugin::~ArchUpdatePlugin() {
     delete settingDialog;
     m_updateThread.quit();
     m_updateThread.wait();
-    QApplication::instance()->removeTranslator(&translator);
+    QApplication::instance()->removeTranslator(translator);
+    QApplication::instance()->removeTranslator(&ArchUpdatePlugin::qtTranslator);
+    delete translator;
 }
 
 const QString ArchUpdatePlugin::pluginName() const {
@@ -67,7 +80,6 @@ const QString ArchUpdatePlugin::pluginDisplayName() const {
 
 void ArchUpdatePlugin::init(PluginProxyInterface *proxyInter) {
     this->m_proxyInter = proxyInter;
-    QApplication::instance()->installTranslator(&translator);
 
     m_data = new ArchUpdateData(
                 m_proxyInter->getValue(this, CHECK_CMD_KEY,
@@ -113,9 +125,6 @@ void ArchUpdatePlugin::init(PluginProxyInterface *proxyInter) {
         emit checkUpdate();
         regularTimer.start(MINUTE * m_proxyInter->getValue(
                                this, CHK_INTERVAL_KEY, DEFAULT_INTERVAL).toInt());
-    }  else {
-        disconnect(&pacmanWatcher, &QFileSystemWatcher::directoryChanged,
-                   this, &ArchUpdatePlugin::fileChanged);
     }
 }
 
@@ -243,7 +252,7 @@ void ArchUpdatePlugin::invokedMenuItem(const QString &itemKey,
         }
         else if (menuID == ABOUT) {
             QMessageBox *about = new QMessageBox(QMessageBox::Information,
-                                             tr("Arch Update: About"),
+                                             tr("About Arch Update"),
                                              tr("Deepin Dock Plugin: Arch Update Indicator.\n"
                                                 "License: GPLv3.0\n"
                                                 "Author: CareF <me@mail.caref.xyz>\n"

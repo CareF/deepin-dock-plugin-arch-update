@@ -26,6 +26,11 @@ sudo make install
 pkill dde-dock
 ```
 
+### Note on i18n ###
+Some of Qt's widgets depends on qtbase_*.qm to fully translated. Unfortunately qtbase_zh_CN is missing. There's a third-party translation [here](https://github.com/wisaly/qtbase_zh). copy qtbase_zh_CN.qm to `/usr/share/qt/translations` to have full Chinese experience. 
+
+Qt 自带的一些组建需要 `qtbase_*.qm` 文件来实现翻译. 然而 `qtbase_zh_CN.qm` 缺失.. 不过可以从[这里](https://github.com/wisaly/qtbase_zh) 下载并复制到 `/usr/share/qt/translations` 实现完整的翻译. 
+
 TODO
 -------
 - [X] non-blocking dialog

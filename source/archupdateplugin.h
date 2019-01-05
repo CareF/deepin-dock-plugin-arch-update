@@ -90,6 +90,9 @@ private slots:
     void reloadSetting();
 
 private:
+    static QTranslator *loadTranslator(const QLocale &locale, QObject *parent = nullptr);
+    QTranslator *translator;
+    static QTranslator qtTranslator;
     QPointer<ArchUpdateItem> m_items;
     QPointer<ArchUpdateApplet> m_popups;
     QPointer<QLabel> m_tips;
@@ -103,7 +106,6 @@ private:
     static const QIntValidator TIMEINMIN;
     QVector<settingItem> config;
     QPointer<SettingDialog> settingDialog;
-    QTranslator translator;
 };
 
 

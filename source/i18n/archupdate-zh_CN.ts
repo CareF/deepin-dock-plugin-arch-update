@@ -17,98 +17,98 @@
 <context>
     <name>ArchUpdatePlugin</name>
     <message>
-        <location filename="../archupdateplugin.cpp" line="20"/>
+        <location filename="../archupdateplugin.cpp" line="38"/>
         <source>Checkupdate</source>
-        <translation>Checkupdate</translation>
+        <translation>检查更新命令</translation>
     </message>
     <message>
-        <location filename="../archupdateplugin.cpp" line="21"/>
+        <location filename="../archupdateplugin.cpp" line="39"/>
         <source>The shell command to check updates (Default `checkupdates` provided by pacman-contrib)</source>
         <translation>检查更新的 shell 命令 (默认为 `checkupdates`. 该命令由 pacman-contrib 提供)</translation>
     </message>
     <message>
-        <location filename="../archupdateplugin.cpp" line="23"/>
+        <location filename="../archupdateplugin.cpp" line="41"/>
         <source>Pacman local path</source>
         <translation>Pacman 本地路径</translation>
     </message>
     <message>
-        <location filename="../archupdateplugin.cpp" line="24"/>
+        <location filename="../archupdateplugin.cpp" line="42"/>
         <source>The plugin watch this path to detect when new packages are installed</source>
         <translation>插件通过监控这个路径来获知安装了新的包</translation>
     </message>
     <message>
-        <location filename="../archupdateplugin.cpp" line="26"/>
+        <location filename="../archupdateplugin.cpp" line="44"/>
         <source>Update shell cmd</source>
         <translation>升级命令</translation>
     </message>
     <message>
-        <location filename="../archupdateplugin.cpp" line="27"/>
+        <location filename="../archupdateplugin.cpp" line="45"/>
         <source>Time Interval (min)</source>
         <translation>时间间隔 (分钟)</translation>
     </message>
     <message>
-        <location filename="../archupdateplugin.cpp" line="28"/>
+        <location filename="../archupdateplugin.cpp" line="46"/>
         <source>Interval between updates check (minutes)</source>
         <translation>自动检查更新的时间间隔 (分钟)</translation>
     </message>
     <message>
-        <location filename="../archupdateplugin.cpp" line="65"/>
+        <location filename="../archupdateplugin.cpp" line="78"/>
         <source>Arch Update</source>
         <translation>Arch 更新</translation>
     </message>
     <message>
-        <location filename="../archupdateplugin.cpp" line="128"/>
+        <location filename="../archupdateplugin.cpp" line="137"/>
         <source>Error: %1
 </source>
         <translation>错误: %1
 </translation>
     </message>
     <message>
-        <location filename="../archupdateplugin.cpp" line="131"/>
+        <location filename="../archupdateplugin.cpp" line="140"/>
         <source>%1 new packages
 </source>
         <translation>%1 个新的包
 </translation>
     </message>
     <message>
-        <location filename="../archupdateplugin.cpp" line="134"/>
+        <location filename="../archupdateplugin.cpp" line="143"/>
         <source>Up to date :)
 </source>
         <translation>已是最新 ^_^
 </translation>
     </message>
     <message>
-        <location filename="../archupdateplugin.cpp" line="136"/>
+        <location filename="../archupdateplugin.cpp" line="145"/>
         <source>Last check: %2</source>
         <translation>上次检查: %2</translation>
     </message>
     <message>
-        <location filename="../archupdateplugin.cpp" line="203"/>
+        <location filename="../archupdateplugin.cpp" line="212"/>
         <source>Checking...</source>
         <translation>正在检查...</translation>
     </message>
     <message>
-        <location filename="../archupdateplugin.cpp" line="207"/>
+        <location filename="../archupdateplugin.cpp" line="216"/>
         <source>Check now</source>
         <translation>立刻检查</translation>
     </message>
     <message>
-        <location filename="../archupdateplugin.cpp" line="214"/>
+        <location filename="../archupdateplugin.cpp" line="223"/>
         <source>Settings</source>
         <translation>设置</translation>
     </message>
     <message>
-        <location filename="../archupdateplugin.cpp" line="220"/>
+        <location filename="../archupdateplugin.cpp" line="229"/>
         <source>About</source>
         <translation>关于</translation>
     </message>
     <message>
-        <location filename="../archupdateplugin.cpp" line="246"/>
-        <source>Arch Update: About</source>
-        <translation>Arch 更新: 关于</translation>
+        <location filename="../archupdateplugin.cpp" line="255"/>
+        <source>About Arch Update</source>
+        <translation>关于 Arch 更新</translation>
     </message>
     <message>
-        <location filename="../archupdateplugin.cpp" line="247"/>
+        <location filename="../archupdateplugin.cpp" line="256"/>
         <source>Deepin Dock Plugin: Arch Update Indicator.
 License: GPLv3.0
 Author: CareF &lt;me@mail.caref.xyz&gt;
