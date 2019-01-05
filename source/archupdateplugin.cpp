@@ -6,6 +6,7 @@
 #include <QApplication>
 #include <QTranslator>
 #include <QException>
+#include <DAboutDialog>
 #ifdef QT_DEBUG
 #include <QDebug>
 #endif
@@ -251,16 +252,29 @@ void ArchUpdatePlugin::invokedMenuItem(const QString &itemKey,
             execSettingDiag();
         }
         else if (menuID == ABOUT) {
-            QMessageBox *about = new QMessageBox(QMessageBox::Information,
-                                             tr("About Arch Update"),
-                                             tr("Deepin Dock Plugin: Arch Update Indicator.\n"
-                                                "License: GPLv3.0\n"
-                                                "Author: CareF <me@mail.caref.xyz>\n"
-                                                "Source: https://github.com/CareF/deepin-dock-plugin-arch-update"),
-                                                 QMessageBox::Ok, m_items);
-            about->setIconPixmap(QIcon(":/lit").pixmap(64));
+//            QMessageBox *about = new QMessageBox(QMessageBox::Information,
+//                                             tr("About Arch Update"),
+//                                             tr("Deepin Dock Plugin: Arch Update Indicator.\n"
+//                                                "License: GPLv3.0\n"
+//                                                "Author: CareF <me@mail.caref.xyz>\n"
+//                                                "Source: https://github.com/CareF/deepin-dock-plugin-arch-update"),
+//                                                 QMessageBox::Ok, m_items);
+//            about->setIconPixmap(QIcon(":/lit").pixmap(64));
+
+            DWIDGET_USE_NAMESPACE
+            DAboutDialog *about = new DAboutDialog(m_items);
+            about->setWindowTitle(tr("About Arch Update"));
+            about->setProductName(tr("Deepin Dock Plugin: Arch Update"));
+            about->setProductIcon(QIcon(":/lit"));
+            about->setVersion(VERSION);
+            about->setDescription(tr("Author: CareF <me@mail.caref.xyz>"));
+            // void setCompanyLogo(const QPixmap &companyLogo);
+            about->setWebsiteName(tr("Source Code (GitHub)"));
+            about->setWebsiteLink("https://github.com/CareF/deepin-dock-plugin-arch-update");
+            // void setAcknowledgementLink(const QString &acknowledgementLink);
+            about->setLicense(tr("License: GPLv3.0"));
+
             about->setWindowModality(Qt::NonModal);
-//            about->setWindowOpacity(0.9);
             about->show();
             // TODO: clickable url?
         }

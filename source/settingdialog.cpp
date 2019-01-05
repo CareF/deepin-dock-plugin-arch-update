@@ -1,17 +1,20 @@
-#include "settingdialog.h"
 #include <QBoxLayout>
 #include <QGridLayout>
 #include <QPushButton>
 #include <QDialogButtonBox>
 #include <QLabel>
+#include <QDialog>
+#include "settingdialog.h"
 #ifdef QT_DEBUG
 #include <QDebug>
 #endif
 #define WIDTH 280
 
+DWIDGET_USE_NAMESPACE
+
 SettingDialog::SettingDialog(QVector<settingItem> &desc, QWidget *parent):
-    QDialog (parent), config(desc) {
-    setWindowTitle(tr("Arch Update Settings"));
+    DAbstractDialog (parent), config(desc) {
+    // setWindowTitle(tr("Arch Update Settings"));
     QVBoxLayout *vLayout = new QVBoxLayout();
     QGridLayout *itemLayout = new QGridLayout();
     inputs = new QPointer<QLineEdit> [config.size()];
