@@ -127,7 +127,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="13.046875"
-     inkscape:cx="19.330558"
+     inkscape:cx="5.5724742"
      inkscape:cy="10.162738"
      inkscape:document-units="px"
      inkscape:current-layer="g2210"
@@ -161,7 +161,7 @@
          id="g2210"
          transform="matrix(0.125,0,0,0.125,615.71887,519.21715)">
         <path
-           style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1;opacity:0.35"
+           style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1;opacity:1"
            d="M 764.75015,435.62318 C 756.29306,456.35771 752.13752,468.47084 742.72166,488.58901 C 748.49477,494.7085 754.61058,503.27765 766.11856,511.3263 C 756.19466,510.64216 744.33307,503.09582 738.0262,497.79178 C 725.9757,522.93702 708.06309,556.78261 669.75015,625.62318 C 699.85528,608.24296 723.19329,597.52272 744.94302,593.4308 C 744.0125,589.41975 743.51542,585.06076 743.55142,580.53529 L 743.57461,579.58436 C 744.05243,560.29195 754.09092,545.45692 765.9794,546.46424 C 777.86787,547.47156 787.12249,563.93331 786.64468,583.22572 C 786.55468,586.85963 786.1322,590.35133 785.41543,593.59315 C 806.9311,597.8037 830.04901,608.47618 859.75015,625.62318 C 853.89286,614.83948 848.64665,607.08273 843.65396,597.82475 C 835.78967,591.72939 829.54943,586.24762 810.85855,573.25257 C 822.35934,576.24095 829.13312,577.24831 835.55168,581.10212 C 784.78965,486.59209 782.15758,476.47346 764.75015,435.62318 z "
            id="path2518"
            sodipodi:nodetypes="ccccccccsscccccc" />
