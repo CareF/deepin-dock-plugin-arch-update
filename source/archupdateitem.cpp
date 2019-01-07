@@ -58,6 +58,8 @@ void ArchUpdateItem::refreshIcon() {
     }
     // QString iconname = QString(":icons/arch-%1-symbolic.svg").arg(state);
     QString iconname = QString(":/%1").arg(state);
+    if(displayMode == Dock::Efficient)
+        iconname += "_white";
 #ifdef QT_DEBUG
     qDebug()<<"refreshIcon: "<<iconname;
 #endif

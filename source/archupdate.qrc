@@ -5,5 +5,9 @@
         <file alias="lit">icons/arch-lit-symbolic.svg</file>
         <file alias="error">icons/arch-error-symbolic.svg</file>
         <file alias="updates">icons/arch-updates-symbolic.svg</file>
+        <file alias="uptpdate_white">icons_white/arch-uptodate-symbolic.svg</file>
+        <file alias="updates_white">icons_white/arch-updates-symbolic.svg</file>
+        <file alias="error_white">icons_white/arch-error-symbolic.svg</file>
+        <file alias="unknown_white">icons_white/arch-unknown-symbolic.svg</file>
     </qresource>
 </RCC>
