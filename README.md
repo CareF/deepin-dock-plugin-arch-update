@@ -12,10 +12,6 @@ Install
 ### AUR ###
 [deepin-plugin-arch-update](https://aur.archlinux.org/packages/deepin-dock-plugin-arch-update/)
 
-### Binary ###
-Download from [Releases](../../releases/) the `libarch_update.so` file and copy it (as sudo) to 
-`/usr/lib/dde-dock/plugins/`
-
 ### Compile it locally ###
 Require Qt
 
@@ -32,6 +28,11 @@ pkill dde-dock
 Some of Qt's widgets depends on qtbase_*.qm to fully translated. Unfortunately qtbase_zh_CN is missing. There's a third-party translation [here](https://github.com/wisaly/qtbase_zh). copy qtbase_zh_CN.qm to `/usr/share/qt/translations` to have full Chinese experience. 
 
 Qt 自带的一些组建需要 `qtbase_*.qm` 文件来实现翻译. 然而 `qtbase_zh_CN.qm` 缺失.. 不过可以从[这里](https://github.com/wisaly/qtbase_zh) 下载并复制到 `/usr/share/qt/translations` 实现完整的翻译. 
+
+Changelog
+-----------
+- v2.0: update to API version 1.1.1, icon becomes white in Efficient mode and replace Qt's QDialog with dtkwidget's DDialog
+- v1.1: add i18n support
 
 TODO
 -------
