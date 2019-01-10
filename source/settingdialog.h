@@ -1,10 +1,10 @@
 #ifndef ARCHUPDATESETTINGDIAG_H
 #define ARCHUPDATESETTINGDIAG_H
-#include <QDialog>
 #include <QValidator>
 #include <QVector>
 #include <QLineEdit>
 #include <QPointer>
+#include "dabstractdialog.h"
 
 struct settingItem {
     const QString name;
@@ -14,7 +14,7 @@ struct settingItem {
     const QValidator *validator;
 };
 
-class SettingDialog : public QDialog
+class SettingDialog : public DTK_WIDGET_NAMESPACE::DAbstractDialog
 {
     Q_OBJECT
 public:

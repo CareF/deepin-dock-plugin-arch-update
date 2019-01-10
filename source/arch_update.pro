@@ -1,10 +1,15 @@
 QT              += widgets svg gui
 TEMPLATE         = lib
-CONFIG          += plugin c++11 lrelease embed_translations
+CONFIG          += plugin c++11 lrelease embed_translations link_pkgconfig
+PKGCONFIG       += dtkwidget
  
 TARGET           = $$qtLibraryTarget(arch_update)
 DESTDIR          = $$_PRO_FILE_PWD_
 DISTFILES       += arch_update.json
+
+LIBDTKPATH       = /usr/include/libdtk-2.0.9
+INCLUDEPATH     += $$LIBDTKPATH/DWidget \
+                   $$LIBDTKPATH/DCore
 
 HEADERS += \
     archupdateplugin.h \ 

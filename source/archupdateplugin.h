@@ -19,6 +19,7 @@
 #define ARCH_KEY "arch-update-key"
 #define STATE_KEY "enable"
 
+#define VERSION "v1.2"
 // itemID or menuID for Context Menu.. Why can't I use enum and switch..
 #define CHECKUPDATE "chk"
 #define SETTINGS "set"

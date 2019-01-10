@@ -11,16 +11,12 @@ class ArchUpdateItem : public QWidget {
 public:
     explicit ArchUpdateItem(const ArchUpdateData* data, QWidget *parent=nullptr);
 
-signals:
-    void requestContextMenu() const;
-
 protected:
     QSize sizeHint() const {return QSize(26, 26); }
     void resizeEvent(QResizeEvent *e){
         QWidget::resizeEvent(e);
         refreshIcon();
     }
-    void mousePressEvent(QMouseEvent *e);
     void paintEvent(QPaintEvent *e);
 
 public slots:

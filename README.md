@@ -4,6 +4,8 @@ Update indicator for Arch Linux and Deepin Dock,
 
 Depend on `pacman-contrib`
 
+This branch tried dtkwidget. 
+
 Install
 --------
 
