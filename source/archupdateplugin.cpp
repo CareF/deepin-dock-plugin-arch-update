@@ -146,10 +146,7 @@ void ArchUpdatePlugin::refreshTips() {
 }
 
 void ArchUpdatePlugin::fileChanged() {
-    // wait for 1min when stop tracking the signal,
-    // than emmit checkUpdate
-    if (watcherTimer.isActive())
-        return;
+    // wait for 5s than emmit checkUpdate
     m_data->ischecking = true;
     watcherTimer.start(MINUTE/12); // 5s
 #ifdef QT_DEBUG
