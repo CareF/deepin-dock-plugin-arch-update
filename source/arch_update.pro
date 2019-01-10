@@ -7,10 +7,6 @@ TARGET           = $$qtLibraryTarget(arch_update)
 DESTDIR          = $$_PRO_FILE_PWD_
 DISTFILES       += arch_update.json
 
-LIBDTKPATH       = /usr/include/libdtk-2.0.9
-INCLUDEPATH     += $$LIBDTKPATH/DWidget \
-                   $$LIBDTKPATH/DCore
-
 HEADERS += \
     archupdateplugin.h \ 
     archupdatedata.h \
