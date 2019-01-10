@@ -9,6 +9,7 @@
 #define DEFAULT_PACMAN_DIR "/var/lib/pacman/local"
 #define DEFAULT_UPDATE "deepin-terminal -e sh -c \"sudo pacman -Syu\""
 #define DEFAULT_INTERVAL 30 //min
+class ArchUpdatePlugin;
 
 class ArchUpdateData : public QObject
 {
@@ -22,6 +23,8 @@ public:
     QString check_cmd;
     QDateTime lastcheck;
     const QStringList &newpackList() const {return newpacks;}
+
+friend class ArchUpdatePlugin;
 
 signals:
     void finished();

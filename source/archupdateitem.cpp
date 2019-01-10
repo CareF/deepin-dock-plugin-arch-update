@@ -30,7 +30,7 @@ void ArchUpdateItem::refreshIcon() {
                               static_cast<int>(std::min(width(), height()) * 0.8) : 16);
     QString state;
     if (m_data->is_checking()) {
-        state = "unkown";
+        state = "unknown";
     }
     else if (m_data->error_code()) {
         state = "error";

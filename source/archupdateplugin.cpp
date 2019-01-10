@@ -150,14 +150,19 @@ void ArchUpdatePlugin::fileChanged() {
     // than emmit checkUpdate
     if (watcherTimer.isActive())
         return;
-    watcherTimer.start(MINUTE/6); // 10s
+    m_data->ischecking = true;
+    watcherTimer.start(MINUTE/12); // 5s
+#ifdef QT_DEBUG
+    qDebug()<<"----ArchUpdate: start watcherTimer";
+#endif
+    m_items->refreshIcon();
 }
-
 void ArchUpdatePlugin::updatesystem() {
     // call terminal to updat system
     QProcess *updateprocess = new QProcess(this);
     connect(updateprocess, SIGNAL(finished(int)), updateprocess, SLOT(deleteLater));
     updateprocess->start(update_cmd);
+    m_proxyInter->requestSetAppletVisible(this, ARCH_KEY, false);
 }
 
 void ArchUpdatePlugin::pluginStateSwitched() {

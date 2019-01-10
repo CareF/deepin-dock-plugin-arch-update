@@ -49,4 +49,5 @@ void ArchUpdateApplet::refreshList() {
     packlist->setFixedWidth(w < WIDTH ? w : WIDTH);
     int h = packlist->sizeHintForRow(0) * packlist->count() + 4;
     packlist->setFixedHeight(h < HEIGHT ? h : HEIGHT);
+    update();
 }
