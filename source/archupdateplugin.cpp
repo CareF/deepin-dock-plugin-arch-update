@@ -142,7 +142,7 @@ void ArchUpdatePlugin::refreshTips() {
         updates = tr("Up to date :)\n");
     }
     m_tips->setText(updates+tr("Last check: %2").arg(
-                m_data->lastcheck.toString("M/d H:m")));
+                m_data->getLastcheck().toString("M/d H:m")));
 }
 
 void ArchUpdatePlugin::fileChanged() {

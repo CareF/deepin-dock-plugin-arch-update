@@ -34,7 +34,7 @@ class ArchUpdatePlugin: public QObject, PluginsItemInterface {
     Q_OBJECT
     Q_INTERFACES(PluginsItemInterface)
     Q_PLUGIN_METADATA(IID "com.deepin.dock.PluginsItemInterface"
-            FILE "arch_update.json")
+                      FILE "arch_update.json")
 
 public:
     explicit ArchUpdatePlugin(QObject *parent = nullptr);
@@ -102,7 +102,7 @@ private:
     QString pacman_dir;
     QString update_cmd;
     QFileSystemWatcher pacmanWatcher;
-    QTimer watcherTimer;
+    QTimer watcherTimer; //TODO: remove it and implement checkLater in archupdatedata
     QTimer regularTimer;
     static const QIntValidator TIMEINMIN;
     QVector<settingItem> config;

@@ -1,14 +1,15 @@
 #include "archupdateapplet.h"
+#include <QMouseEvent>
 #ifdef QT_DEBUG
 #include <QDebug>
 #endif
 
 #define WIDTH 280
-#define HEIGHT 800
+#define HEIGHT 500
 
 ArchUpdateApplet::ArchUpdateApplet(const ArchUpdateData* data, QWidget *parent) :
     QWidget(parent), m_data(data),
-    packlist(new QListWidget(this)),
+    packlist(new UpdateList(this)),
     updateButton(new QPushButton(tr("Update"), this))
 {
     packlist->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -17,6 +18,8 @@ ArchUpdateApplet::ArchUpdateApplet(const ArchUpdateData* data, QWidget *parent) 
     packlist->setMaximumWidth(WIDTH);
     packlist->setMaximumHeight(HEIGHT);
     packlist->setSelectionMode(QAbstractItemView::NoSelection);
+    packlist->setMouseTracking(true);
+    packlist->setStyleSheet("QListWidget::item:hover {background-color:rgba(255, 255, 255, .2);}");
 
     QVBoxLayout *vLayout = new QVBoxLayout(this);
     vLayout->addWidget(packlist);
@@ -41,6 +44,11 @@ void ArchUpdateApplet::refreshList() {
     else {
         // TODO: show version when hover
         packlist->addItems(m_data->newpackList());
+        for (int i=0; i<packlist->count(); i++) {
+            QListWidgetItem *item = packlist->item(i);
+            item->setToolTip(QString("%1 → %2").arg(m_data->currentV(i)).arg(
+                                 m_data->newV(i)));
+        }
         #ifdef QT_DEBUG
         qDebug()<<"-->Arch Update Applet packlist count: "<<packlist->count();
         #endif
@@ -50,4 +58,34 @@ void ArchUpdateApplet::refreshList() {
     int h = packlist->sizeHintForRow(0) * packlist->count() + 4;
     packlist->setFixedHeight(h < HEIGHT ? h : HEIGHT);
     update();
+}
+
+void UpdateList::startTip() {
+    showTip = true;
+    popTip(this->mapFromGlobal(QCursor::pos()));
+}
+
+void UpdateList::enterEvent(QEvent *event) {
+    if (!(mouseInTimer.isActive() || showTip ))
+        mouseInTimer.start();
+    QListWidget::enterEvent(event);
+}
+
+void UpdateList::leaveEvent(QEvent *event) {
+    mouseInTimer.stop();
+    showTip = false;
+    QListWidget::leaveEvent(event);
+}
+
+void UpdateList::mouseMoveEvent (QMouseEvent *event) {
+    if (showTip) {
+        popTip(event->pos());
+    }
+    QListWidget::mouseMoveEvent(event);
+}
+
+void UpdateList::popTip(const QPoint &p) {
+    QToolTip::showText(this->mapToGlobal(p),
+                       this->itemAt(p)->toolTip(),
+                       this, this->rect());
 }

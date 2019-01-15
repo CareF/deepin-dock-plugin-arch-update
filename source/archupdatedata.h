@@ -18,11 +18,17 @@ class ArchUpdateData : public QObject
 public:
     ArchUpdateData(const QString cmd=DEFAULT_CHK_UPDATE);
     bool is_checking() const {return ischecking;}
+    /** \brief Return code for update command, 0 for no error
+     * \details
+     * If the process cannot be started, error=-2.
+     * If the process crashes, error=-1. */
     int error_code() const {return error;}
     int newcount() const {return newpacks.count();}
     QString check_cmd;
-    QDateTime lastcheck;
     const QStringList &newpackList() const {return newpacks;}
+    const QString &currentV(int n) const {return versionOld[n];}
+    const QString &newV(int n) const {return versionNew[n];}
+    const QDateTime &getLastcheck() const {return lastcheck;}
 
 friend class ArchUpdatePlugin;
 
@@ -34,9 +40,11 @@ public slots:
 
 private:
     bool ischecking;
-    int error; // Return code for update command, 0 for no error
-    // If the process cannot be started, error=-2. If the process crashes, error=-1.
+    int error;
+    QDateTime lastcheck;
     QStringList newpacks;
+    QStringList versionOld;
+    QStringList versionNew;
 };
 
 #endif // ARCHUPDATEDATA_H 

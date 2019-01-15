@@ -4,9 +4,8 @@
 #include <QDebug>
 
 ArchUpdateData::ArchUpdateData(const QString cmd):
-    QObject(nullptr), check_cmd(cmd),
-    lastcheck(QDateTime(QDate(1970,1,1))),
-    ischecking(false), error(0) {
+    QObject(nullptr), check_cmd(cmd),ischecking(false),
+    error(0), lastcheck(QDateTime(QDate(1970,1,1))) {
 
 }
 
@@ -29,16 +28,21 @@ bool ArchUpdateData::check() {
     }
     error = chkprocess.exitCode();
     if (error != 0) {
-        qDebug() << "Check Update Error: " << chkprocess.readAllStandardOutput();
+        qDebug() << "Check Update Error: " <<
+                    chkprocess.readAllStandardOutput();
     }
 
     // Parse the result of checkupdates
     QTextStream outf(chkprocess.readAllStandardOutput());
     QString pkgname, v1, arrow, v2;
     newpacks.clear();
+    versionNew.clear();
+    versionOld.clear();
     while(!(outf>>pkgname>>v1>>arrow>>v2).atEnd()) {
         // format is "pkgname version1 -> version2" each line
         newpacks.push_back(pkgname);
+        versionOld.push_back(v1);
+        versionNew.push_back(v2);
     }
 
     lastcheck = QDateTime::currentDateTime();
