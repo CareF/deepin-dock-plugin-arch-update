@@ -18,8 +18,6 @@ ArchUpdateApplet::ArchUpdateApplet(const ArchUpdateData* data, QWidget *parent) 
     packlist->setMaximumWidth(WIDTH);
     packlist->setMaximumHeight(HEIGHT);
     packlist->setSelectionMode(QAbstractItemView::NoSelection);
-    packlist->setMouseTracking(true);
-    packlist->setStyleSheet("QListWidget::item:hover {background-color:rgba(255, 255, 255, .2);}");
 
     QVBoxLayout *vLayout = new QVBoxLayout(this);
     vLayout->addWidget(packlist);
@@ -40,6 +38,8 @@ void ArchUpdateApplet::refreshList() {
         QListWidgetItem* nopack = new QListWidgetItem(tr("  ..(None)..  "), packlist);
         nopack->setTextAlignment(Qt::AlignHCenter);
         packlist->addItem(nopack);
+        packlist->setMouseTracking(false);
+        packlist->setStyleSheet("");
     }
     else {
         // TODO: show version when hover
@@ -52,6 +52,8 @@ void ArchUpdateApplet::refreshList() {
         #ifdef QT_DEBUG
         qDebug()<<"-->Arch Update Applet packlist count: "<<packlist->count();
         #endif
+        packlist->setMouseTracking(true);
+        packlist->setStyleSheet("QListWidget::item:hover {background-color:rgba(255, 255, 255, .2);}");
     }
     int w = packlist->sizeHintForColumn(0) + 5;
     packlist->setFixedWidth(w < WIDTH ? w : WIDTH);
@@ -88,4 +90,13 @@ void UpdateList::popTip(const QPoint &p) {
     QToolTip::showText(this->mapToGlobal(p),
                        this->itemAt(p)->toolTip(),
                        this, this->rect());
+}
+
+void UpdateList::clear() {
+    if (showTip) {
+        // Restart a timer
+        showTip = false;
+        mouseInTimer.start();
+    }
+    QListWidget::clear();
 }

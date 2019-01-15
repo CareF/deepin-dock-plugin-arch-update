@@ -20,6 +20,9 @@ public:
         mouseInTimer.callOnTimeout(this, &UpdateList::startTip);
     }
 
+public slots:
+    void clear();
+
 protected:
     virtual void enterEvent(QEvent *event) override;
     virtual void leaveEvent(QEvent *event) override;
