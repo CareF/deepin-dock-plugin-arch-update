@@ -36,6 +36,9 @@ Changelog
 
 TODO
 -------
+- [ ] Watched package list
+- [ ] System notice bubble (waiting for API documents)
+- [ ] Hide on no package 
 - [X] non-blocking dialog
 - [X] translation (waiting for qtbase_zh_CN)
 - [X] show update version infos
