@@ -39,6 +39,7 @@ TODO
 - [ ] Watched package list
 - [ ] System notice bubble (waiting for API documents)
 - [ ] Hide on no package 
+- [ ] Publish on AUR with Github Hook (?)
 - [X] non-blocking dialog
 - [X] translation (waiting for qtbase_zh_CN)
 - [X] show update version infos
