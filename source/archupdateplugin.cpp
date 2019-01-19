@@ -35,6 +35,7 @@ ArchUpdatePlugin::ArchUpdatePlugin(QObject *parent):
     m_items(nullptr), m_popups(nullptr), m_tips(nullptr),
     m_data(nullptr), pacman_dir(), update_cmd(),
     pacmanWatcher(this), watcherTimer(this), regularTimer(this),
+    hideWhenUpToDate(false), hideTimer(this),
     config({
                 {tr("Checkupdate"), DEFAULT_CHK_UPDATE,
                  tr("The shell command to check updates (Default `checkupdates` provided by pacman-contrib)"),
@@ -49,13 +50,14 @@ ArchUpdatePlugin::ArchUpdatePlugin(QObject *parent):
             })
 {
     watcherTimer.setSingleShot(true);
-    connect(&watcherTimer, &QTimer::timeout,
-            this, &ArchUpdatePlugin::checkUpdate);
-    connect(&regularTimer, &QTimer::timeout,
-            this, &ArchUpdatePlugin::checkUpdate);
+    watcherTimer.callOnTimeout(this, &ArchUpdatePlugin::checkUpdate);
+    regularTimer.callOnTimeout(this, &ArchUpdatePlugin::checkUpdate);
     settingDialog = new SettingDialog(config);
     settingDialog->setWindowModality(Qt::NonModal);
-    connect(settingDialog, &SettingDialog::accepted, this, &ArchUpdatePlugin::reloadSetting);
+    connect(settingDialog, &SettingDialog::accepted,
+            this, &ArchUpdatePlugin::reloadSetting);
+    hideTimer.setSingleShot(true);
+    hideTimer.callOnTimeout(this, &ArchUpdatePlugin::hide);
 }
 
 ArchUpdatePlugin::~ArchUpdatePlugin() {
@@ -90,6 +92,8 @@ void ArchUpdatePlugin::init(PluginProxyInterface *proxyInter) {
             m_data, &ArchUpdateData::check);
     connect(m_data, &ArchUpdateData::finished,
             this, &ArchUpdatePlugin::refreshTips);
+    connect(m_data, &ArchUpdateData::finished,
+            this, &ArchUpdatePlugin::checkHide);
     m_updateThread.start();
 
     m_items = new ArchUpdateItem(m_data);
@@ -115,6 +119,9 @@ void ArchUpdatePlugin::init(PluginProxyInterface *proxyInter) {
     // pacmanWatcher.removePaths(pacmanWatcher.files());
     // ? Is init called every time the plugin is loaded and unloaded
     // without or with distroy and recreate it?
+
+    hideWhenUpToDate = m_proxyInter->getValue(this, HIDE_KEY,
+                         false).toBool();
 
     if(!pluginIsDisable()) {
         this->m_proxyInter->itemAdded(this, ARCH_KEY);
@@ -174,7 +181,18 @@ void ArchUpdatePlugin::pluginStateSwitched() {
         pacmanWatcher.addPath(pacman_dir);
         m_proxyInter->itemAdded(this, ARCH_KEY);
         emit checkUpdate();
+        checkHide();
     }
+}
+
+void ArchUpdatePlugin::checkHide() {
+    if (m_data->newcount() == 0 && hideWhenUpToDate) {
+        hideTimer.start(MINUTE/6); // 10s
+    }
+}
+
+void ArchUpdatePlugin::hide() {
+    m_proxyInter->itemRemoved(this, ARCH_KEY);
 }
 
 bool ArchUpdatePlugin::pluginIsDisable() {
@@ -225,6 +243,17 @@ const QString ArchUpdatePlugin::itemContextMenu(const QString &itemKey) {
         settings["isActive"] = true;
         items.push_back(settings);
 
+        QMap<QString, QVariant> hide;
+        hide["itemId"] = HIDE;
+        if (hideWhenUpToDate) {
+            hide["itemText"] = tr("Always Show");
+        }
+        else {
+            hide["itemText"] = tr("Auto Hide");
+        }
+        hide["isActive"] = true;
+        items.push_back(hide);
+
         QMap<QString, QVariant> about;
         about["itemId"] = ABOUT;
         about["itemText"] = tr("About");
@@ -250,6 +279,12 @@ void ArchUpdatePlugin::invokedMenuItem(const QString &itemKey,
         }
         else if (menuID == SETTINGS) {
             execSettingDiag();
+        }
+        else if (menuID == HIDE) {
+            hideWhenUpToDate = !hideWhenUpToDate;
+            m_proxyInter->saveValue(this, HIDE_KEY, hideWhenUpToDate);
+            if (hideWhenUpToDate)
+                hide();
         }
         else if (menuID == ABOUT) {
 //            QMessageBox *about = new QMessageBox(QMessageBox::Information,

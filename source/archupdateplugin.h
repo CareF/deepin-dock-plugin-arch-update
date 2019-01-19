@@ -24,11 +24,13 @@
 #define CHECKUPDATE "chk"
 #define SETTINGS "set"
 #define ABOUT "about"
+#define HIDE "hide"
 // keys for settings from .config/deepin/dde-dock.conf, set and get through m_proxyInter
 #define CHECK_CMD_KEY "check_command"
 #define PACMAN_DIR_KEY "pacman_dir"
 #define UPDATE_CMD_KEY "update_cmd"
 #define CHK_INTERVAL_KEY "chk_intvl"
+#define HIDE_KEY "hide"
 
 class ArchUpdatePlugin: public QObject, PluginsItemInterface {
     Q_OBJECT
@@ -89,6 +91,8 @@ private slots:
     void fileChanged();
     void updatesystem();
     void reloadSetting();
+    void hide();
+    void checkHide();
 
 private:
     static QTranslator *loadTranslator(const QLocale &locale, QObject *parent = nullptr);
@@ -104,6 +108,8 @@ private:
     QFileSystemWatcher pacmanWatcher;
     QTimer watcherTimer; //TODO: remove it and implement checkLater in archupdatedata
     QTimer regularTimer;
+    bool hideWhenUpToDate;
+    QTimer hideTimer;
     static const QIntValidator TIMEINMIN;
     QVector<settingItem> config;
     QPointer<SettingDialog> settingDialog;
