@@ -189,6 +189,10 @@ void ArchUpdatePlugin::checkHide() {
     if (m_data->newcount() == 0 && hideWhenUpToDate) {
         hideTimer.start(MINUTE/6); // 10s
     }
+    else {
+        // Add the item back
+        m_proxyInter->itemAdded(this, ARCH_KEY);
+    }
 }
 
 void ArchUpdatePlugin::hide() {
