@@ -287,8 +287,18 @@ void ArchUpdatePlugin::invokedMenuItem(const QString &itemKey,
         else if (menuID == HIDE) {
             hideWhenUpToDate = !hideWhenUpToDate;
             m_proxyInter->saveValue(this, HIDE_KEY, hideWhenUpToDate);
-            if (hideWhenUpToDate)
+            if (hideWhenUpToDate) {
+                // Show notice of autohide
+                DWIDGET_USE_NAMESPACE
+                DDialog *hideNotice = new DDialog(tr("Arch Update Plugin Auto Hide"),
+                            tr("The Arch Update plugin icon will hide when there's no new packages. "
+                               "It will show again temporarily if it's disabled and reenabled. "));
+                hideNotice->setMaximumWidth(400);
+                hideNotice->setAttribute(Qt::WA_DeleteOnClose);
+                hideNotice->setWindowModality(Qt::NonModal);
+                hideNotice->show();
                 hide();
+            }
         }
         else if (menuID == ABOUT) {
 //            QMessageBox *about = new QMessageBox(QMessageBox::Information,
@@ -302,6 +312,7 @@ void ArchUpdatePlugin::invokedMenuItem(const QString &itemKey,
 
             DWIDGET_USE_NAMESPACE
             DAboutDialog *about = new DAboutDialog(m_items);
+            about->setAttribute(Qt::WA_DeleteOnClose);
             about->setWindowTitle(tr("About Arch Update"));
             about->setProductName(tr("Deepin Dock Plugin: Arch Update"));
             about->setProductIcon(QIcon(":/lit"));
