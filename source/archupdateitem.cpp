@@ -27,7 +27,7 @@ void ArchUpdateItem::refreshIcon() {
     // const Dock::DisplayMode displayMode = Dock::DisplayMode::Efficient;
     const auto ratio = qApp->devicePixelRatio();
     const int iconSize = (displayMode == Dock::Fashion ?
-                              static_cast<int>(std::min(width(), height()) * 0.8) : 16);
+                              static_cast<int>(std::min(width(), height()) * 0.6) : 16);
     QString state;
     if (m_data->is_checking()) {
         state = "unknown";
