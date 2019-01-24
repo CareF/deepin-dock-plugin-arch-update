@@ -41,6 +41,13 @@ SettingDialog::SettingDialog(QVector<settingItem> &desc, QWidget *parent):
     setLayout(vLayout);
 }
 
+void SettingDialog::show() {
+    for (int n=0; n<config.size(); n++) {
+        inputs[n]->setText(config[n].currentValue);
+    }
+    DAbstractDialog::show();
+}
+
 SettingDialog::~SettingDialog() {
     delete[] inputs;
 }

@@ -24,6 +24,7 @@ public:
 public slots:
     virtual void accept() override;
     virtual void reset();
+    void show(); // Override dialog show: update editlines before show
 
 private:
     QVector<settingItem> &config;
