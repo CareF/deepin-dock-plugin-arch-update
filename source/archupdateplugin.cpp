@@ -186,7 +186,8 @@ void ArchUpdatePlugin::pluginStateSwitched() {
 }
 
 void ArchUpdatePlugin::checkHide() {
-    if (m_data->newcount() == 0 && hideWhenUpToDate) {
+    if (!m_data->is_checking() && m_data->error_code() == 0 &&
+            m_data->newcount() == 0 && hideWhenUpToDate) {
         hideTimer.start(MINUTE/6); // 10s
     }
     else {
