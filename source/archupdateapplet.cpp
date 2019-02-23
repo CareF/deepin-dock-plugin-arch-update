@@ -42,7 +42,6 @@ void ArchUpdateApplet::refreshList() {
         packlist->setStyleSheet("");
     }
     else {
-        // TODO: show version when hover
         packlist->addItems(m_data->newpackList());
         for (int i=0; i<packlist->count(); i++) {
             QListWidgetItem *item = packlist->item(i);
@@ -87,9 +86,11 @@ void UpdateList::mouseMoveEvent (QMouseEvent *event) {
 }
 
 void UpdateList::popTip(const QPoint &p) {
-    QToolTip::showText(this->mapToGlobal(p),
-                       this->itemAt(p)->toolTip(),
-                       this, this->rect());
+    QListWidgetItem *theItem = this->itemAt(p);
+    if (theItem != nullptr)
+        QToolTip::showText(this->mapToGlobal(p),
+                           theItem->toolTip(),
+                           this, this->rect());
 }
 
 void UpdateList::clear() {
