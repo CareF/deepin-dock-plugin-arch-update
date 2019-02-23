@@ -29,6 +29,7 @@ Qt 自带的一些组建需要 `qtbase_*.qm` 文件来实现翻译. 然而 `qtba
 
 Changelog
 -----------
+- v2.3: Add auto hide and bug fix
 - v2.2: hover tip for version change
 - v2.1: bug fix
 - v2.0: update to API version 1.1.1, icon becomes white in Efficient mode and replace Qt's QDialog with dtkwidget's DDialog
