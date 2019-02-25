@@ -2,6 +2,12 @@ Arch Linux Updates Indicator DDE Dock Plugin
 ===============
 Update indicator for Arch Linux and Deepin Dock, 
 
+![applet](/updateApplet.png)
+
+The plugin uses dtkwidget to get full deepin design experience. 
+
+![setting](/settings.png)
+
 Depend on `pacman-contrib`
 
 Install
@@ -11,7 +17,7 @@ Install
 [deepin-plugin-arch-update](https://aur.archlinux.org/packages/deepin-dock-plugin-arch-update/)
 
 ### Compile it locally ###
-Require Qt
+Require Qt and dtkwidget
 
 ```
 mkdir build
