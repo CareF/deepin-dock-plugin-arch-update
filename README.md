@@ -40,7 +40,7 @@ TODO
 - [ ] Watched package list
 - [ ] System notice bubble (waiting for API documents)
 - [X] Hide on no package 
-- [ ] Auto Hide notice (how to revert setting)
+- [X] Auto Hide notice (how to revert setting)
 - [ ] Publish on AUR with Github Hook (?)
 - [X] non-blocking dialog
 - [X] translation (waiting for qtbase_zh_CN)
