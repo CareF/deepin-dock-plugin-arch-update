@@ -322,7 +322,7 @@ void ArchUpdatePlugin::invokedMenuItem(const QString &itemKey,
             // void setCompanyLogo(const QPixmap &companyLogo);
             about->setWebsiteName(tr("Source Code (GitHub)"));
             about->setWebsiteLink("https://github.com/CareF/deepin-dock-plugin-arch-update");
-            // void setAcknowledgementLink(const QString &acknowledgementLink);
+            about->setAcknowledgementLink("https://github.com/CareF/deepin-dock-plugin-arch-update#credits");
             about->setLicense(tr("License: GPLv3.0"));
 
             about->setWindowModality(Qt::NonModal);
