@@ -44,10 +44,10 @@ Changelog
 TODO
 -------
 - [ ] Watched package list
-- [ ] System notice bubble (waiting for API documents)
+- [ ] System notice bubble
 - [X] Hide on no package 
 - [X] Auto Hide notice (how to revert setting)
-- [ ] Publish on AUR with Github Hook (?)
+- [X] Publish on AUR with Github Hook (?)
 - [X] non-blocking dialog
 - [X] translation (waiting for qtbase_zh_CN)
 - [X] show update version infos
