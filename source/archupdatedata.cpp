@@ -28,8 +28,15 @@ bool ArchUpdateData::check() {
     }
     error = chkprocess.exitCode();
     if (error != 0) {
-        qDebug() << "Check Update Error: " <<
-                    chkprocess.readAllStandardOutput();
+        auto res = chkprocess.readAllStandardOutput();
+        if (error == 1 && res.isEmpty()) {
+            // no new packages: this is a feature change of checkupdates command
+            error = 0;
+        }
+        else {
+            qDebug() << "Check Update Error: " << error <<
+                        chkprocess.readAllStandardOutput();
+        }
     }
 
     // Parse the result of checkupdates
