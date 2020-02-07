@@ -29,7 +29,7 @@ bool ArchUpdateData::check() {
     error = chkprocess.exitCode();
     if (error != 0) {
         auto res = chkprocess.readAllStandardOutput();
-        if (error == 1 && res.isEmpty()) {
+        if (error == 2 && res.isEmpty()) {
             // no new packages: this is a feature change of checkupdates command
             error = 0;
         }
