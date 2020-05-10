@@ -26,8 +26,7 @@ void ArchUpdateItem::refreshIcon() {
     // TODO: cache these pixmap
     // const Dock::DisplayMode displayMode = Dock::DisplayMode::Efficient;
     const auto ratio = qApp->devicePixelRatio();
-    const int iconSize = (displayMode == Dock::Fashion ?
-                              static_cast<int>(std::min(width(), height()) * 0.6) : 16);
+    const int iconSize = PLUGIN_ICON_MAX_SIZE;
     QString state;
     if (m_data->is_checking()) {
         state = "unknown";
