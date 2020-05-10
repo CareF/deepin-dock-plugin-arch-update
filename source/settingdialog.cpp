@@ -8,7 +8,7 @@
 #ifdef QT_DEBUG
 #include <QDebug>
 #endif
-#define WIDTH 280
+#define WIDTH 300
 
 DWIDGET_USE_NAMESPACE
 

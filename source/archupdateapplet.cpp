@@ -4,7 +4,8 @@
 #include <QDebug>
 #endif
 
-#define WIDTH 280
+#define WIDTH 350
+#define WIDTH_MIN 125
 #define HEIGHT 500
 
 ArchUpdateApplet::ArchUpdateApplet(const ArchUpdateData* data, QWidget *parent) :
@@ -55,7 +56,11 @@ void ArchUpdateApplet::refreshList() {
         packlist->setStyleSheet("QListWidget::item:hover {background-color:rgba(255, 255, 255, .2);}");
     }
     int w = packlist->sizeHintForColumn(0) + 5;
-    packlist->setFixedWidth(w < WIDTH ? w : WIDTH);
+    if(w < WIDTH_MIN)
+        w = WIDTH_MIN;
+    else if(w > WIDTH)
+        w = WIDTH;
+    packlist->setFixedWidth(w);
     int h = packlist->sizeHintForRow(0) * packlist->count() + 4;
     packlist->setFixedHeight(h < HEIGHT ? h : HEIGHT);
     update();
