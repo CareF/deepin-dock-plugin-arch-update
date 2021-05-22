@@ -1,5 +1,9 @@
 Arch Linux Updates Indicator DDE Dock Plugin
 ===============
+
+
+**This repo is no longer actively maintaining, due to breaking changes from deepin and lack of API docs**
+
 Update indicator for Arch Linux and Deepin Dock, 
 
 <img src="/updateApplet.png" width=350>
